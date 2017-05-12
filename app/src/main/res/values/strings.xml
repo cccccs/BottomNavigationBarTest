@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BottomNavigationBarTest</string>
+    <string name="search_edit">"搜索兼职"</string>
+</resources>

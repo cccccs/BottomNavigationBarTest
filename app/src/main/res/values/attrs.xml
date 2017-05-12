@@ -1,0 +1,7 @@
+<resources>
+    <declare-styleable name="MyToolBar">
+        <attr name = "leftButtonIcon" format="reference"/>
+        <attr name = "rightButtonIcon" format="reference"/>
+        <attr name = "isShowSearchView" format="boolean"/>
+    </declare-styleable>
+</resources>

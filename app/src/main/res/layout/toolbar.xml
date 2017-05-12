@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="7"
+        android:paddingLeft="5dp"
+        android:paddingBottom="6dp"
+        android:paddingEnd="0dp"
+        android:paddingRight="0dp"
+        android:paddingStart="5dp"
+        android:paddingTop="5dp">
+    <TextView
+        android:id="@+id/toolbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:paddingLeft="5dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"/>
+        <android.support.v7.widget.SearchView
+            android:id="@+id/toolbar_searchview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:queryHint="搜索兼职"
+            android:background="@drawable/rectangle"
+            android:shadowColor="#fff"
+            android:imeOptions="flagNoExtractUi"/>
+    </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/toolbar_rightbutton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/blue"/>
+    </LinearLayout>
+</LinearLayout>
