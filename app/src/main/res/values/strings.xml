@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">BottomNavigationBarTest</string>
     <string name="search_edit">"搜索兼职"</string>
+    <string name="press_again_exit">再按一次退出</string>
 </resources>

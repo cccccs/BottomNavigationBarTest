@@ -1,4 +1,4 @@
-package activitytest.com.example.bottomnavigationbartest.db;
+package activitytest.com.example.bottomnavigationbartest.adpater;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,10 +7,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
-import activitytest.com.example.bottomnavigationbartest.MainActivity;
+import activitytest.com.example.bottomnavigationbartest.db.Job;
+import activitytest.com.example.bottomnavigationbartest.ui.fragment.first.JobDetailFragment;
 import activitytest.com.example.bottomnavigationbartest.R;
+import activitytest.com.example.bottomnavigationbartest.event.StartBrotherEvent;
 
 /**
  * Created by pc on 2017/2/16.
@@ -53,7 +57,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
             public void onClick(View v) {
                 int position  = holder.getAdapterPosition();
                 Job job = mJobList.get(position);
-                ((MainActivity) parent.getContext()).changeToClassifyFragment();
+                EventBus.getDefault().post(new StartBrotherEvent(JobDetailFragment.newInstance()));
 
             }
         });

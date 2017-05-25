@@ -1,10 +1,9 @@
-package activitytest.com.example.bottomnavigationbartest.Fragment;
+package activitytest.com.example.bottomnavigationbartest.ui.fragment.first;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,13 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import activitytest.com.example.bottomnavigationbartest.App;
-import activitytest.com.example.bottomnavigationbartest.db.JobAdapter;
 import activitytest.com.example.bottomnavigationbartest.MyItemDecoration;
 import activitytest.com.example.bottomnavigationbartest.R;
-import activitytest.com.example.bottomnavigationbartest.db.TypeAdapter;
+import activitytest.com.example.bottomnavigationbartest.adpater.JobAdapter;
+import activitytest.com.example.bottomnavigationbartest.adpater.TypeAdapter;
+import activitytest.com.example.bottomnavigationbartest.base.BaseMainFragment;
 import activitytest.com.example.bottomnavigationbartest.db.Job;
 import activitytest.com.example.bottomnavigationbartest.db.TypeOfJob;
-import activitytest.com.example.bottomnavigationbartest.engine.Engine;
 import activitytest.com.example.bottomnavigationbartest.model.BannerModel;
 import cn.bingoogolapple.bgabanner.BGABanner;
 import cn.bingoogolapple.bgabanner.BGABannerUtil;
@@ -36,23 +35,58 @@ import retrofit2.Response;
 /**
  * Created by pc on 2016/11/12.
  */
-public class HomeFragment extends Fragment implements BGABanner.Delegate<ImageView, String>, BGABanner.Adapter<ImageView, String>{
-
-    private SearchView mSearchView;
+public class FirstTabFragment extends BaseMainFragment implements BGABanner.Delegate<ImageView, String>, BGABanner.Adapter<ImageView, String>{
     private List<Job> jobList = new ArrayList<>();
-    private Engine mEngine;
     private List<TypeOfJob> typeList = new ArrayList<>();
+
+
+    RecyclerView jobRecyclerView;
+    RecyclerView typeRecyclerView;
+    BGABanner hBgaBanner;
+    NestedScrollView mNestScrollView;
+    public static FirstTabFragment newInstance(){
+        Bundle args = new Bundle();
+        FirstTabFragment fragment = new FirstTabFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_tab_first, container, false);
         initJobs();
         initTypes();
+        initView(view);
 
-        RecyclerView jobRecyclerView = (RecyclerView) view.findViewById(R.id.job_rec);
-        RecyclerView typeRecyclerView = (RecyclerView) view.findViewById(R.id.type_rec);
-        BGABanner hBgaBanner =(BGABanner) view.findViewById(R.id.banner);
+        //        mEngine = ((App)getActivity().getApplication()).getInstance().getEngine();
+//            loadData(hBgaBanner, 5);
+//        mSearchView=(SearchView) view.findViewById(R.id.home_searchview);
+//        mSearchView.setIconified(false);
+//        mSearchView.setIconifiedByDefault(false);
+//        mSearchView.setFocusable(false);
+//        mSearchView.setFocusableInTouchMode(false);
+//        mSearchView.requestFocus();
+//        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return false;
+//            }
+//        });
+        // recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.));
+        return view;
+    }
+    private void initView(View view){
+        jobRecyclerView = (RecyclerView) view.findViewById(R.id.job_rec);
+        typeRecyclerView = (RecyclerView) view.findViewById(R.id.type_rec);
+        hBgaBanner =(BGABanner) view.findViewById(R.id.banner);
+        mNestScrollView = (NestedScrollView) view.findViewById(R.id.nested_scroll_view);
+
 
         //兼职加载显示
         LinearLayoutManager jobLayoutManager = new LinearLayoutManager(getActivity());
@@ -76,27 +110,7 @@ public class HomeFragment extends Fragment implements BGABanner.Delegate<ImageVi
         TypeAdapter typeAdapter = new TypeAdapter(typeList);
         typeRecyclerView.setAdapter(typeAdapter);
         typeRecyclerView.setNestedScrollingEnabled(false);
-        //        mEngine = ((App)getActivity().getApplication()).getInstance().getEngine();
-//            loadData(hBgaBanner, 5);
-//        mSearchView=(SearchView) view.findViewById(R.id.home_searchview);
-//        mSearchView.setIconified(false);
-//        mSearchView.setIconifiedByDefault(false);
-//        mSearchView.setFocusable(false);
-//        mSearchView.setFocusableInTouchMode(false);
-//        mSearchView.requestFocus();
-//        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                return false;
-//            }
-//        });
-        // recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.));
-        return view;
+
     }
 
     private void loadData(final BGABanner banner, final int count) {
@@ -111,7 +125,7 @@ public class HomeFragment extends Fragment implements BGABanner.Delegate<ImageVi
                  */
 //                banner.setAutoPlayAble(bannerModel.imgs.size() > 1);
 
-                banner.setAdapter(HomeFragment.this);
+                banner.setAdapter(FirstTabFragment.this);
                 banner.setData(bannerModel.imgs, bannerModel.tips);
             }
 
@@ -190,6 +204,12 @@ public class HomeFragment extends Fragment implements BGABanner.Delegate<ImageVi
         item6.setJobType("托管");
         item6.setImageType(R.drawable.gridview_6);
         typeList.add(item6);
+
+    }
+
+    @Override
+    public void onDetach(){
+        super.onDetach();
 
     }
 

@@ -1,4 +1,4 @@
-package activitytest.com.example.bottomnavigationbartest.db;
+package activitytest.com.example.bottomnavigationbartest.adpater;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import activitytest.com.example.bottomnavigationbartest.R;
+import activitytest.com.example.bottomnavigationbartest.db.TypeOfJob;
 
 /**
  * Created by pc on 2017/4/17.
