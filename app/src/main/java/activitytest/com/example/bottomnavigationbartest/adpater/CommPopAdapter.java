@@ -1,4 +1,4 @@
-package activitytest.com.example.bottomnavigationbartest;
+package activitytest.com.example.bottomnavigationbartest.adpater;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import activitytest.com.example.bottomnavigationbartest.R;
 
 /**
  * Created by pc on 2017/4/23.

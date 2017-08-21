@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent">
-            <activitytest.com.example.bottomnavigationbartest.MyToolBar
+            <activitytest.com.example.bottomnavigationbartest.ui.view.MyToolBar
                 android:id="@+id/main_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
                 app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:rightButtonIcon="@drawable/ic_cached_black_24dp"/>
         </android.support.design.widget.AppBarLayout>
-        <activitytest.com.example.bottomnavigationbartest.MyNestScrollView
+        <activitytest.com.example.bottomnavigationbartest.ui.view.MyNestScrollView
             android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-        </activitytest.com.example.bottomnavigationbartest.MyNestScrollView>
+        </activitytest.com.example.bottomnavigationbartest.ui.view.MyNestScrollView>
 
         <com.ashokvarma.bottomnavigation.BottomNavigationBar
             android:id="@+id/bottom_navigation_bar"

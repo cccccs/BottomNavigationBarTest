@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent">
-        <activitytest.com.example.bottomnavigationbartest.MyToolBar
+        <activitytest.com.example.bottomnavigationbartest.ui.view.MyToolBar
             android:id="@+id/main_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,8 +18,9 @@
             android:minHeight="?android:attr/actionBarSize"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
             app:rightButtonIcon="@drawable/ic_cached_black_24dp"/>
+            <!--app:layout_scrollFlags="scroll|enterAlways|snap"-->
+
     </android.support.design.widget.AppBarLayout>
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -36,7 +37,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-
         app:cardCornerRadius="0dp">
     <cn.bingoogolapple.bgabanner.BGABanner
 

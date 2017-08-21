@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
@@ -11,12 +12,11 @@
         android:layout_width="match_parent"
         android:layout_marginBottom="@dimen/bottombar_height"
         android:layout_height="match_parent"/>
-    <com.ashokvarma.bottomnavigation.BottomNavigationBar
-        android:id="@+id/bottom_navigation_bar"
+    <activitytest.com.example.bottomnavigationbartest.ui.view.BottomBar
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:outlineProvider="bounds"
-        app:elevation="8dp"/>
+        android:layout_height="52dp"
+        android:layout_gravity="bottom"/>
+
 
 </FrameLayout>

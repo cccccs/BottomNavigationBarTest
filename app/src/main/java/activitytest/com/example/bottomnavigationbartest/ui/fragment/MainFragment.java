@@ -1,5 +1,7 @@
 package activitytest.com.example.bottomnavigationbartest.ui.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -7,41 +9,53 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
-import com.ashokvarma.bottomnavigation.BottomNavigationBar;
-import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import activitytest.com.example.bottomnavigationbartest.MyApplication;
 import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseFragment;
+import activitytest.com.example.bottomnavigationbartest.db.User;
+import activitytest.com.example.bottomnavigationbartest.event.LoginCancelEvent;
+import activitytest.com.example.bottomnavigationbartest.event.LoginSuccessEvent;
 import activitytest.com.example.bottomnavigationbartest.event.StartBrotherEvent;
+import activitytest.com.example.bottomnavigationbartest.event.StartBrotherResEvent;
 import activitytest.com.example.bottomnavigationbartest.event.TabSelectedEvent;
 import activitytest.com.example.bottomnavigationbartest.ui.fragment.first.FirstTabFragment;
 import activitytest.com.example.bottomnavigationbartest.ui.fragment.fours.FoursTabFragment;
 import activitytest.com.example.bottomnavigationbartest.ui.fragment.second.SecondTabFragment;
 import activitytest.com.example.bottomnavigationbartest.ui.fragment.third.ThirdTabFragment;
+import activitytest.com.example.bottomnavigationbartest.ui.view.BottomBar;
+import activitytest.com.example.bottomnavigationbartest.ui.view.BottomBarTab;
 import me.yokeyword.fragmentation.SupportFragment;
 
 import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
-import static java.lang.Boolean.FALSE;
 
 /**
  * Created by pc on 2017/5/17.
  */
 
-public class MainFragment extends BaseFragment implements BottomNavigationBar.OnTabSelectedListener {
+public class MainFragment extends BaseFragment {
     public static final int FIRST = 0;
     public static final int SECOND = 1;
     public static final int THIRD = 2;
     public static final int FOURS = 3;
-    int lastSelectedPosition = 0;
-    int prePosition = 0;
+    MyApplication mApplication;
+    User loginUser;
+    boolean stuLogin = true;
+
+    private static final int REQ_MODIFY_FRAGMENT = 100;
+    public static final String KEY_RESULT_TYPE = "title";
+
 
     private SupportFragment[] mFragments = new SupportFragment[4];
+    private SupportFragment[] stuFragments = new SupportFragment[3];
+    private SupportFragment[] empFragments = new SupportFragment[3];
+    private BottomBarTab[] bottomItems = new BottomBarTab[3];
 
-    BottomNavigationBar bottomNavigationBar;
+    BottomBar bottomBar;
     FrameLayout mFrameLayout;
 
     public static MainFragment newInstance() {
@@ -55,27 +69,62 @@ public class MainFragment extends BaseFragment implements BottomNavigationBar.On
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+        mApplication =(MyApplication)getActivity().getApplication();
+        loginUser = mApplication.getLoginUser();
+        SharedPreferences pref = getActivity().getSharedPreferences("data", Context.MODE_PRIVATE);
+        String strAccount = pref.getString("account","");
+        String strPassword = pref.getString("password","");
+
+        if(strAccount.equals("") ) {
+
+        }else if(strAccount.equals("111")){
+            loginUser.setUserType(User.UserType.business);
+            loginUser.setName(strAccount);
+            loginUser.setLogin(true);
+            loginUser.setUserPassWord(strPassword);
+            stuLogin=false;
+        }else{
+            loginUser.setUserType(User.UserType.student);
+            loginUser.setName(strAccount);
+            loginUser.setLogin(true);
+            loginUser.setUserPassWord(strPassword);
+            stuLogin=true;
+        }
 
         if (savedInstanceState == null) {
-            mFragments[FIRST] = FirstTabFragment.newInstance();
-            mFragments[SECOND] = SecondTabFragment.newInstance();
-            mFragments[THIRD] = ThirdTabFragment.newInstance();
-            mFragments[FOURS] = FoursTabFragment.newInstance();
+            stuFragments[FIRST]=mFragments[FIRST] = FirstTabFragment.newInstance();
+            empFragments[FIRST]=mFragments[SECOND] = SecondTabFragment.newInstance();
+            empFragments[SECOND]=stuFragments[SECOND]=mFragments[THIRD] = ThirdTabFragment.newInstance();
+            empFragments[THIRD]=stuFragments[THIRD]=mFragments[FOURS] = FoursTabFragment.newInstance();
 
-            loadMultipleRootFragment(R.id.fl_tab_container, FIRST,
-                    mFragments[FIRST],
-                    mFragments[SECOND],
-                    mFragments[THIRD],
-                    mFragments[FOURS]);
+
+            if (loginUser.getUserType() == User.UserType.student) {
+                loadMultipleRootFragment(R.id.fl_tab_container, FIRST,
+                        mFragments[FIRST],
+                        mFragments[SECOND],
+                        mFragments[THIRD],
+                        mFragments[FOURS]);
+            }else{
+                loadMultipleRootFragment(R.id.fl_tab_container, SECOND,
+                        mFragments[FIRST],
+                        mFragments[SECOND],
+                        mFragments[THIRD],
+                        mFragments[FOURS]);
+            }
+
+
+
         } else {
             // 这里库已经做了Fragment恢复,所有不需要额外的处理了, 不会出现重叠问题
 
             // 这里我们需要拿到mFragments的引用,也可以通过getChildFragmentManager.getFragments()自行进行判断查找(效率更高些),用下面的方法查找更方便些
-            mFragments[FIRST] = findChildFragment(FirstTabFragment.class);
-            mFragments[SECOND] = findChildFragment(SecondTabFragment.class);
-            mFragments[THIRD] = findChildFragment(ThirdTabFragment.class);
-            mFragments[FOURS] = findChildFragment(FoursTabFragment.class);
+            stuFragments[FIRST]=mFragments[FIRST] = findChildFragment(FirstTabFragment.class);
+            empFragments[FIRST]=mFragments[SECOND] = findChildFragment(SecondTabFragment.class);
+            empFragments[SECOND]=stuFragments[SECOND]=mFragments[THIRD] = findChildFragment(ThirdTabFragment.class);
+            empFragments[THIRD]=stuFragments[THIRD]=mFragments[FOURS] = findChildFragment(FoursTabFragment.class);
         }
+
+
 
         initView(view);
         return view;
@@ -84,67 +133,73 @@ public class MainFragment extends BaseFragment implements BottomNavigationBar.On
 
     private void initView(View view) {
         EventBus.getDefault().register(this);
-        bottomNavigationBar = (BottomNavigationBar) view.findViewById(R.id.bottom_navigation_bar);
-        bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
-        bottomNavigationBar
-                .setActiveColor(R.color.white)
-                .setBarBackgroundColor(R.color.blue);
-        bottomNavigationBar
-                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE
-                );
-        bottomNavigationBar
-                .addItem(new BottomNavigationItem(R.drawable.ic_list_black_24dp, "主页"))
-                .addItem(new BottomNavigationItem(R.drawable.ic_add_black_24dp, "发布"))
-                .addItem(new BottomNavigationItem(R.drawable.ic_notifications_none_black_24dp, "消息"))
-                .addItem(new BottomNavigationItem(R.drawable.ic_person_outline_black_24dp, "我"))
-                .setFirstSelectedPosition(lastSelectedPosition)
-                .initialise();
-        bottomNavigationBar.setTabSelectedListener(this);
-        bottomNavigationBar.setAutoHideEnabled(true);
-
-        mFrameLayout =(FrameLayout) view.findViewById(R.id.fl_tab_container);
-
-        setDefaultFragment();
+        bottomBar = (BottomBar) view.findViewById(R.id.bottomBar);
 
 
-    }
-    /**
-     * 设置默认的
-     */
-    private void setDefaultFragment() {
-   //     loadRootFragment(R.id.fl_tab_container, mFragments[FIRST]);
-    }
 
-    @Override
-    public void onTabSelected(int position) {
-        showHideFragment(mFragments[position], mFragments[prePosition]);
-        prePosition = position;
-        if(position == 0) {
-            bottomNavigationBar.setAutoHideEnabled(true);
-
-            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams)mFrameLayout.getLayoutParams();
-            lp.bottomMargin=0;
-            mFrameLayout.setLayoutParams(lp);
-        }else {
-            bottomNavigationBar.setAutoHideEnabled(FALSE);
-
-            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams)mFrameLayout.getLayoutParams();
-            lp.bottomMargin=52;
-            mFrameLayout.setLayoutParams(lp);
-        }
+        if (loginUser.getUserType() == User.UserType.student) {
+            bottomItems[0] = new BottomBarTab(_mActivity, R.drawable.ic_list_black_24dp, "主页");
+            bottomItems[1] = new BottomBarTab(_mActivity, R.drawable.ic_notifications_none_black_24dp, "消息");
+            bottomItems[2] = new BottomBarTab(_mActivity, R.drawable.ic_person_outline_black_24dp, "我");
+            bottomBar
+                    .addItem(bottomItems[0])
+                    .addItem(bottomItems[1])
+                    .addItem(bottomItems[2]);
+        } else {
+            bottomItems[0] = new BottomBarTab(_mActivity, R.drawable.ic_add_black_24dp, "发布");
+            bottomItems[1] = new BottomBarTab(_mActivity, R.drawable.ic_notifications_none_black_24dp, "消息");
+            bottomItems[2] = new BottomBarTab(_mActivity, R.drawable.ic_person_outline_black_24dp, "我");
+            bottomBar
+                    .addItem(bottomItems[0])
+                    .addItem(bottomItems[1])
+                    .addItem(bottomItems[2]);
         }
 
-    @Override
-    public void onTabUnselected(int position) {
-        Log.d(TAG, "onTabUnselected() called with: " + "position = [" + position + "]");
+        bottomBar.setOnTabSelectedListener(new BottomBar.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(int position,int prePosition) {
+                if(loginUser.getUserType()== User.UserType.student) {
+                    showHideFragment(stuFragments[position], stuFragments[prePosition]);
+                }else {
+                    showHideFragment(empFragments[position], empFragments[prePosition]);
+                }
+
+            }
+
+            @Override
+            public void onTabUnselected(int position) {
+                Log.d(TAG, "onTabUnselected() called with: " + "position = [" + position + "]");
+            }
+
+            @Override
+            public void onTabReselected(int position) {
+                // 这里推荐使用EventBus来实现 -> 解耦
+                // 在FirstPagerFragment,FirstHomeFragment中接收, 因为是嵌套的Fragment
+                // 主要为了交互: 重选tab 如果列表不在顶部则移动到顶部,如果已经在顶部,则刷新
+                EventBus.getDefault().post(new TabSelectedEvent(position));
+            }
+        });
+
     }
 
+
     @Override
-    public void onTabReselected(int position) {
-        // 这里推荐使用EventBus来实现 -> 解耦
-        // 在FirstPagerFragment,FirstHomeFragment中接收, 因为是嵌套的Fragment
-        // 主要为了交互: 重选tab 如果列表不在顶部则移动到顶部,如果已经在顶部,则刷新
-        EventBus.getDefault().post(new TabSelectedEvent(position));
+    public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
+        super.onFragmentResult(requestCode, resultCode, data);
+        if (requestCode == REQ_MODIFY_FRAGMENT && resultCode == RESULT_OK && data != null) {
+            String userType = data.getString(KEY_RESULT_TYPE);
+            Log.d("MainActivity",userType);
+            if (userType.equals("business")) {
+                stuLogin = false;
+                bottomBar.replaceTab(0, new BottomBarTab(_mActivity, R.drawable.ic_add_black_24dp, "发布"));
+            }else if(userType.equals("student")){
+                bottomBar.replaceTab(0,new BottomBarTab(_mActivity, R.drawable.ic_list_black_24dp, "主页"));
+                stuLogin = true;
+            }
+
+            Toast.makeText(_mActivity, "登录成功", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Subscribe
@@ -152,14 +207,65 @@ public class MainFragment extends BaseFragment implements BottomNavigationBar.On
         start(event.targetFragment);
     }
 
+    @Subscribe
+    public void startBrotherRes(StartBrotherResEvent event){
+        startForResult(event.targetFragment, REQ_MODIFY_FRAGMENT);
+    }
+
+    @Subscribe
+    public void loginSuccess(LoginSuccessEvent event){
+
+    }
+    @Subscribe
+    public void loginCancel(LoginCancelEvent event){
+        if(!stuLogin){
+            bottomBar.replaceTab(0,new BottomBarTab(_mActivity, R.drawable.ic_list_black_24dp, "主页"));
+            stuLogin = true;
+        }
+    }
+
     @Override
     public void onDestroyView() {
+        Log.d("MainActivity","MainOnDestroyView");
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        Log.d("MainActivity","MainOnStart");
+    }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d("MainActivity","MainResume");
+    }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.d("MainActivity","MainPause");
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        Log.d("MainActivity","MainStop");
+    }
+
+    @Override
+    public void onSupportVisible(){
+        super.onSupportVisible();
+        Log.d("MainActivity","MainVisible");
+    }
+
+    @Override
+    public void onSupportInvisible(){
+        super.onSupportInvisible();
+        Log.d("MainActivity","MainInVisible");
+    }
 }
 
 

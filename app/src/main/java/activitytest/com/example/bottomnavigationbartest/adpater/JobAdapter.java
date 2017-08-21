@@ -1,5 +1,6 @@
 package activitytest.com.example.bottomnavigationbartest.adpater;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +10,28 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import activitytest.com.example.bottomnavigationbartest.db.Job;
-import activitytest.com.example.bottomnavigationbartest.ui.fragment.first.JobDetailFragment;
 import activitytest.com.example.bottomnavigationbartest.R;
+import activitytest.com.example.bottomnavigationbartest.db.Job;
 import activitytest.com.example.bottomnavigationbartest.event.StartBrotherEvent;
+import activitytest.com.example.bottomnavigationbartest.ui.fragment.first.JobDetailFragment;
 
 /**
  * Created by pc on 2017/2/16.
  */
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
+    private Context mContext;
+    private LayoutInflater mInflater;
 
-    public List<Job> mJobList;
+
+    private List<Job> mJobList = new ArrayList<>();
+    public void setDatas(List<Job> beans) {
+        mJobList.clear();
+        mJobList.addAll(beans);
+        notifyDataSetChanged();//动态刷新列表
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView workImage;
@@ -44,9 +54,15 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
         }
     }
 
-    public JobAdapter(List<Job> jobList){
-        mJobList = jobList;
+    public JobAdapter(Context context){
+        mContext = context;
+        mInflater = LayoutInflater.from(context);
     }
+
+    public Job getMsg(int position){
+        return mJobList.get(position);
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType){
@@ -57,7 +73,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
             public void onClick(View v) {
                 int position  = holder.getAdapterPosition();
                 Job job = mJobList.get(position);
-                EventBus.getDefault().post(new StartBrotherEvent(JobDetailFragment.newInstance()));
+                EventBus.getDefault().post(new StartBrotherEvent(JobDetailFragment.newInstance(job)));
 
             }
         });

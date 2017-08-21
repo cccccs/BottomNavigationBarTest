@@ -1,4 +1,4 @@
-package activitytest.com.example.bottomnavigationbartest;
+package activitytest.com.example.bottomnavigationbartest.ui.view;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,10 +12,13 @@ import android.widget.PopupWindow;
 import java.util.ArrayList;
 import java.util.List;
 
+import activitytest.com.example.bottomnavigationbartest.adpater.CommPopAdapter;
+import activitytest.com.example.bottomnavigationbartest.R;
+
 /**
  * Created by pc on 2017/4/23.
  */
-
+//SearchResult View
 public class CommonFilterPop extends PopupWindow {
 
     //布局填充器

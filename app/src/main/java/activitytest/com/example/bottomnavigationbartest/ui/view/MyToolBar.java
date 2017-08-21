@@ -1,4 +1,4 @@
-package activitytest.com.example.bottomnavigationbartest;
+package activitytest.com.example.bottomnavigationbartest.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import activitytest.com.example.bottomnavigationbartest.R;
+import activitytest.com.example.bottomnavigationbartest.SearchResultActivity;
 
 /**
  * Created by pc on 2017/2/27.
@@ -37,7 +40,7 @@ public class MyToolBar extends Toolbar {
         initView();
         setContentInsetsRelative(10,10);
         if(attrs != null){
-            final TintTypedArray a = TintTypedArray.obtainStyledAttributes(getContext(),attrs,R.styleable.MyToolBar,defStyleAttr,0);
+            final TintTypedArray a = TintTypedArray.obtainStyledAttributes(getContext(),attrs, R.styleable.MyToolBar,defStyleAttr,0);
             final Drawable rightIcon = a.getDrawable(R.styleable.MyToolBar_rightButtonIcon);
             if(rightIcon != null){
                 setRightButtonIcon(rightIcon);

@@ -1,4 +1,4 @@
-package activitytest.com.example.bottomnavigationbartest;
+package activitytest.com.example.bottomnavigationbartest.ui.view;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

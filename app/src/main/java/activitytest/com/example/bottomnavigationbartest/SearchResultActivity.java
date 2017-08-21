@@ -14,11 +14,13 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import activitytest.com.example.bottomnavigationbartest.base.BaseActivity;
+
 /**
  * Created by pc on 2017/2/25.
  */
 
-public class SearchResultActivity extends BaseActivity{
+public class SearchResultActivity extends BaseActivity {
 
     private EditText searchEdit;
     private ImageButton searchDelete;
@@ -160,7 +162,6 @@ public class SearchResultActivity extends BaseActivity{
             }
         });
 
-        //
         mTypeCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton compoundButton,boolean isChecked){

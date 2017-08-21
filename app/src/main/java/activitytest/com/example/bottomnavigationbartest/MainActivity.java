@@ -7,7 +7,6 @@ import android.util.Log;
 import activitytest.com.example.bottomnavigationbartest.ui.fragment.MainFragment;
 import me.yokeyword.fragmentation.SupportActivity;
 import me.yokeyword.fragmentation.SupportFragment;
-import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator;
 import me.yokeyword.fragmentation.anim.FragmentAnimator;
 import me.yokeyword.fragmentation.helper.FragmentLifecycleCallbacks;
 
@@ -45,8 +44,8 @@ public class MainActivity extends SupportActivity{
 
     @Override
     public FragmentAnimator onCreateFragmentAnimator() {
-        // 设置横向(和安卓4.x动画相同)
-        return new DefaultHorizontalAnimator();
+        //竖向
+        return  super.onCreateFragmentAnimator();
     }
 
 
@@ -76,11 +75,11 @@ public class MainActivity extends SupportActivity{
 ////        }
 //        setContentView(R.layout.activity_main);
 //        toolBar = (MyToolBar) findViewById(R.id.main_toolbar);
-//       // toolbar.setTitle("Title");//设getWindow().setStatusBarColor(Color.TRANSPARENT);置主标题
-//       // toolbar.setSubtitle("Subtitle");//设置子标题
+//        toolbar.setTitle("Title");//设getWindow().setStatusBarColor(Color.TRANSPARENT);置主标题
+//       //toolbar.setSubtitle("Subtitle");//设置子标题
 //        setSupportActionBar(toolBar);
 //        getSupportActionBar().setDisplayShowTitleEnabled(false);
-//
+
 //        bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
 //        myNestScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
 //        bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
@@ -102,7 +101,7 @@ public class MainActivity extends SupportActivity{
 //
 //        setDefaultFragment();
 //
-//
+
 //    }
 //    /**
 //     * 设置默认的

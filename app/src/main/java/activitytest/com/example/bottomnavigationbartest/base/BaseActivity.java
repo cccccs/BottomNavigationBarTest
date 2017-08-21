@@ -1,4 +1,4 @@
-package activitytest.com.example.bottomnavigationbartest;
+package activitytest.com.example.bottomnavigationbartest.base;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,6 +11,9 @@ import android.widget.CheckBox;
 import android.widget.PopupWindow;
 
 import java.util.List;
+
+import activitytest.com.example.bottomnavigationbartest.ActivityCollector;
+import activitytest.com.example.bottomnavigationbartest.ui.view.CommonFilterPop;
 
 /**
  * Created by pc on 2017/4/22.
@@ -32,7 +35,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showFilterPopupWindow(View parentView,List<String> itemTexts, AdapterView.OnItemClickListener itemClickListener,CustomerDismissListener dismissListener){
-        showFilterPopupWindow(parentView, itemTexts, itemClickListener, dismissListener,0);
     }
     /*
     *列表选择popupWindow
@@ -102,7 +104,7 @@ public class BaseActivity extends AppCompatActivity {
     public class CustomerDismissListener implements PopupWindow.OnDismissListener{
         @Override
         public void onDismiss(){
-            //当pop消失时，重置背景透明度
+            //当pop消失时，重置背景透明度q2w
             WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
             lp.alpha = 1.0f;
             activity.getWindow().setAttributes(lp);

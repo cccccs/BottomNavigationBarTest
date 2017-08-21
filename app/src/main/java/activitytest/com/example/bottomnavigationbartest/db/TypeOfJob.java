@@ -3,7 +3,7 @@ package activitytest.com.example.bottomnavigationbartest.db;
 /**
  * Created by pc on 2017/3/30.
  */
-
+//主页工作分类
 public class TypeOfJob {
 
     private String typeName;

@@ -1,6 +1,7 @@
 package activitytest.com.example.bottomnavigationbartest.ui.fragment.first;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +10,18 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ashokvarma.bottomnavigation.BottomNavigationBar;
-
 import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseBackFragment;
+import activitytest.com.example.bottomnavigationbartest.db.Job;
 
 /**
  * Created by pc on 2017/5/8.
  */
 
 public class JobDetailFragment extends BaseBackFragment {
+    private static final String ARG_JOB = "arg_job";
+
+    private Job mJob;
 
     TextView mJobDetailName;
     TextView mJobDetailSalre;
@@ -30,23 +33,41 @@ public class JobDetailFragment extends BaseBackFragment {
     TextView mWorkDate;
     TextView mWorkTime;
     TextView mWorkContent;
+    TextView mJobHadPeopleNum;
     LinearLayout mCollectLinear;
     LinearLayout mSignUpLinear;
 
     public static JobDetailFragment newInstance() {
-        JobDetailFragment fragment = new JobDetailFragment();
         Bundle args = new Bundle();
+        JobDetailFragment fragment = new JobDetailFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
+    public static JobDetailFragment newInstance(Job job){
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_JOB, job);
+        JobDetailFragment fragment = new JobDetailFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mJob = getArguments().getParcelable(ARG_JOB);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_job_detail,container, false);
+        View view = inflater.inflate(R.layout.first_job_detail,container, false);
+
         initView(view);
         return view;
     }
 
     public void initView(View view){
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         mJobDetailName = (TextView)view.findViewById(R.id.job_detail_name);
         mJobDetailSalre = (TextView)view.findViewById(R.id.job_detail_salary);
         mJobDetailLoc = (TextView) view.findViewById(R.id.job_detail_place);
@@ -57,18 +78,30 @@ public class JobDetailFragment extends BaseBackFragment {
         mWorkDate = (TextView) view.findViewById(R.id.job_detail_job_date);
         mWorkTime =(TextView)view.findViewById(R.id.job_detail_work_time);
         mWorkContent = (TextView) view.findViewById(R.id.job_detail_job_content);
+        mJobHadPeopleNum = (TextView)view.findViewById(R.id.job_detail_had_people_num);
         mCollectLinear = (LinearLayout)view.findViewById(R.id.job_detail_collect);
         mSignUpLinear = (LinearLayout) view.findViewById(R.id.signUp);
-        mJobDetailName.setText("招聘兼职文字编辑");
-        mJobDetailSalre.setText("80元/天");
-        mJobDetailLoc.setText("金明>30KM");
-        mJobDetailDate.setText("2016-08-17");
-        mJobType.setText("家教");
-        mJobPeopleNum.setText("1人");
-        mJobSex.setText("不限");
-        mWorkDate.setText("8月-9月");
-        mWorkTime.setText("下午3点到5点");
-        mWorkContent.setText("要求：有初中语文教学经验，善于沟通表达，课堂活跃的大学生老师。要求汉语言专业大学生。男大学生优先，女大学生也可以考虑。有意者请联系选师无忧伍老师13610045402（微");
+
+        mJobDetailName.setText(mJob.getWorkName());
+        mJobDetailSalre.setText(mJob.getWorkPay());
+        mJobDetailLoc.setText(mJob.getWorkPlace());
+        mJobDetailDate.setText(mJob.getPublishTime());
+        mJobType.setText(mJob.getWorkType());
+        mJobPeopleNum.setText(mJob.getPeopleNum());
+        mJobSex.setText(mJob.getJobSex());
+        mWorkDate.setText(mJob.getWorkData());
+        mWorkTime.setText(mJob.getWorkTime());
+        mWorkContent.setText(mJob.getWorkContent());
+        mJobHadPeopleNum.setText(mJob.getHavePeopleNum());
+
+        toolbar.setTitle("兼职详情");
+       toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               _mActivity.onBackPressed();
+            }
+        });
 
     }
     @Override
@@ -89,10 +122,6 @@ public class JobDetailFragment extends BaseBackFragment {
     @Override
     public void onDetach(){
         super.onDetach();
-        Toolbar mToolbar =(Toolbar)getActivity().findViewById(R.id.main_toolbar);
-        mToolbar.setVisibility(View.VISIBLE);
-        BottomNavigationBar bottomNavigationBar = (BottomNavigationBar)getActivity().findViewById(R.id.bottom_navigation_bar);
-        bottomNavigationBar.setVisibility(View.VISIBLE);
     }
 
 }

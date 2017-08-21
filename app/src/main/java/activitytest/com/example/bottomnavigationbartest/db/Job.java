@@ -1,28 +1,58 @@
 package activitytest.com.example.bottomnavigationbartest.db;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by pc on 2017/2/15.
  */
-public class Job {
-
-    private String workTime;
+//主页兼职选项
+public class Job implements Parcelable {
+    private String workName;
+    private String workPay;
+    private String workPlace;
     private String publishTime;
-    public String workPlace;
-    public String workPay;
-    public String workName;
-    public int imageId;
-    public int jobId;
+    private String workType;
+    private String PeopleNum;
+    private String jobSex;
+    private String workData;
+    private String workTime;
+    private String workContent;
+    private String havePeopleNum;
 
-    public  Job(String workTime,String publishTime,String workName,String workPlace,String workPay,int imageId,int jobId){
-        this.jobId =jobId;
-        this.imageId = imageId;
-        this.workName = workName;
-        this.workPay = workPay;
-        this.workPlace = workPlace;
-        this.workTime = workTime;
-        this.publishTime = publishTime;
+    private int imageId;
+    private int jobId;
+
+    public  Job(){
     }
 
+    protected Job(Parcel in){
+        workName = in.readString();
+        workPay = in.readString();
+        workPlace = in.readString();
+        publishTime = in.readString();
+        workType = in.readString();
+        PeopleNum = in.readString();
+        jobSex = in.readString();
+        workData = in.readString();
+        workTime = in.readString();
+        workContent = in.readString();
+        havePeopleNum = in.readString();
+        imageId = in.readInt();
+        jobId = in.readInt();
+    }
+    public void setWorkType(String workType){this.workType = workType;}
+    public void setPeopleNum(String peopleNum){this.PeopleNum = peopleNum;}
+    public void setJobSex(String jobSex){this.jobSex = jobSex;}
+    public void setWorkData(String workData){this.workData = workData;}
+    public void setWorkContent(String workContent){this.workContent = workContent;}
+    public void setHavePeopleNum(String havePeopleNum){this.havePeopleNum = havePeopleNum;}
+    public String getWorkType(){return workType;}
+    public String getPeopleNum(){return PeopleNum;}
+    public String getJobSex(){return jobSex;}
+    public String getWorkData(){return workData;}
+    public String getWorkContent(){return workContent;}
+    public String getHavePeopleNum(){return havePeopleNum;}
     public void setWorkTime(String workTime){
         this.workTime = workTime;
     }
@@ -78,5 +108,39 @@ public class Job {
     public int getJobId(){
         return jobId;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(workName);
+        dest.writeString(workPay);
+        dest.writeString(workPlace);
+        dest.writeString(publishTime);
+        dest.writeString(workType);
+        dest.writeString(PeopleNum);
+        dest.writeString(jobSex);
+        dest.writeString(workData);
+        dest.writeString(workTime);
+        dest.writeString(workContent);
+        dest.writeString(havePeopleNum);
+        dest.writeInt(imageId);
+        dest.writeInt(jobId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Job> CREATOR = new Creator<Job>() {
+        @Override
+        public Job createFromParcel(Parcel in) {
+            return new Job(in);
+        }
+
+        @Override
+        public Job[] newArray(int size) {
+            return new Job[size];
+        }
+    };
 
 }

@@ -1,4 +1,4 @@
-package activitytest.com.example.bottomnavigationbartest;
+package activitytest.com.example.bottomnavigationbartest.ui.view;
 
 import android.content.Context;
 import android.support.v4.widget.NestedScrollView;
