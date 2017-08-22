@@ -48,7 +48,9 @@
               />
       </RelativeLayout>
     </android.support.v7.widget.Toolbar>
-    <include layout="@layout/search_choose"/>
+
+    <include layout="@layout/search_choose" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

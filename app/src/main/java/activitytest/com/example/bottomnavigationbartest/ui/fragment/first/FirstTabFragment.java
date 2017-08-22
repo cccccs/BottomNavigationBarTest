@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,9 @@ import activitytest.com.example.bottomnavigationbartest.adpater.TypeAdapter;
 import activitytest.com.example.bottomnavigationbartest.base.BaseMainFragment;
 import activitytest.com.example.bottomnavigationbartest.db.Job;
 import activitytest.com.example.bottomnavigationbartest.db.TypeOfJob;
+import activitytest.com.example.bottomnavigationbartest.event.StartBrotherEvent;
+import activitytest.com.example.bottomnavigationbartest.listener.OnItemClickListener;
+import activitytest.com.example.bottomnavigationbartest.ui.fragment.third.MsgFragment;
 import activitytest.com.example.bottomnavigationbartest.ui.view.MyItemDecoration;
 import cn.bingoogolapple.bgabanner.BGABanner;
 import cn.bingoogolapple.bgabanner.BGABannerUtil;
@@ -104,9 +109,17 @@ public class FirstTabFragment extends BaseMainFragment implements BGABanner.Dele
         LinearLayoutManager typeLayoutManager = new LinearLayoutManager(getActivity());
         typeLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         typeRecyclerView.setLayoutManager(typeLayoutManager);
-        TypeAdapter typeAdapter = new TypeAdapter(typeList);
+        final TypeAdapter typeAdapter = new TypeAdapter(_mActivity);
         typeRecyclerView.setAdapter(typeAdapter);
+        typeAdapter.setDatas(typeList);
         typeRecyclerView.setNestedScrollingEnabled(false);
+
+        typeAdapter.setOnItemCLickLister(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, View view, RecyclerView.ViewHolder vh) {
+                EventBus.getDefault().post(new StartBrotherEvent(SearchFragment.newInstance(typeAdapter.getType(position).getTypeName())));
+            }
+        });
 
     }
 
@@ -208,27 +221,27 @@ public class FirstTabFragment extends BaseMainFragment implements BGABanner.Dele
     private void initTypes(){
         typeList.clear();
         TypeOfJob item1 = new TypeOfJob();
-        item1.setJobType("推广");
+        item1.setJobType("校内四助");
         item1.setImageType(R.drawable.gridview_1);
         typeList.add(item1);
         TypeOfJob item2 = new TypeOfJob();
         item2.setJobType("家教");
-        item2.setImageType(R.drawable.gridview_2);
+        item2.setImageType(R.drawable.gridview_7);
         typeList.add(item2);
         TypeOfJob item3 = new TypeOfJob();
-        item3.setJobType("实习");
-        item3.setImageType(R.drawable.gridview_3);
+        item3.setJobType("派单");
+        item3.setImageType(R.drawable.gridview_10);
         typeList.add(item3);
         TypeOfJob item4 = new TypeOfJob();
-        item4.setJobType("保安");
-        item4.setImageType(R.drawable.gridview_4);
+        item4.setJobType("服务员");
+        item4.setImageType(R.drawable.gridview_9);
         typeList.add(item4);
         TypeOfJob item5 = new TypeOfJob();
-        item5.setJobType("促销");
+        item5.setJobType("销售");
         item5.setImageType(R.drawable.gridview_5);
         typeList.add(item5);
         TypeOfJob item6 = new TypeOfJob();
-        item6.setJobType("托管");
+        item6.setJobType("调研");
         item6.setImageType(R.drawable.gridview_6);
         typeList.add(item6);
 

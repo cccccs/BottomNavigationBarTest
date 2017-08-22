@@ -149,6 +149,23 @@ public class FoursTabFragment extends BaseMainFragment  {
             public void onItemClick(int position, View view, RecyclerView.ViewHolder vh) {
                 Log.d("MainActivity","xxxx");
                 if(!loginUser.getlogin()){
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                    dialog.setTitle("未登录");
+                    dialog.setMessage("请先登录！");
+                    dialog.setCancelable(false);
+                    dialog.setPositiveButton("登录", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            EventBus.getDefault().post(new StartBrotherResEvent(LoginFragment.newInstance()));
+                        }
+                    });
+                    dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    dialog.show();
+
 
                 }else{
                     if(loginUser.getUserType()==student){

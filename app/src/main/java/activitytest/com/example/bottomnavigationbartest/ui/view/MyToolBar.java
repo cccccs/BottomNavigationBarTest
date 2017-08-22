@@ -1,7 +1,6 @@
 package activitytest.com.example.bottomnavigationbartest.ui.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.TintTypedArray;
@@ -14,8 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import activitytest.com.example.bottomnavigationbartest.R;
-import activitytest.com.example.bottomnavigationbartest.SearchResultActivity;
+import activitytest.com.example.bottomnavigationbartest.event.StartBrotherEvent;
+import activitytest.com.example.bottomnavigationbartest.ui.fragment.first.SearchFragment;
 
 /**
  * Created by pc on 2017/2/27.
@@ -74,8 +76,7 @@ public class MyToolBar extends Toolbar {
             mSearchView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getContext(),SearchResultActivity.class);
-                    getContext().startActivity(intent);
+                    EventBus.getDefault().post(new StartBrotherEvent(SearchFragment.newInstance()));
                 }
             });
         }

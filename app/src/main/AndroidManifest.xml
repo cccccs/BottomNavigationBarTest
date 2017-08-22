@@ -24,11 +24,6 @@
                 android:value=".activity.SearchResultActivity"/>
         </activity>
 
-        <activity android:name=".SearchResultActivity"
-            android:windowSoftInputMode="stateAlwaysVisible">
-
-        </activity>
-
     </application>
 
 </manifest>
