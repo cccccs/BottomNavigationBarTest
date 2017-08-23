@@ -1,9 +1,13 @@
 package activitytest.com.example.bottomnavigationbartest.ui.fragment.first;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,24 +24,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import activitytest.com.example.bottomnavigationbartest.R;
+import activitytest.com.example.bottomnavigationbartest.adpater.JobAdapter;
 import activitytest.com.example.bottomnavigationbartest.base.BaseBackFragment;
+import activitytest.com.example.bottomnavigationbartest.db.Job;
 import activitytest.com.example.bottomnavigationbartest.ui.view.CommonFilterPop;
 
 /**
  * Created by pc on 2017/8/22.
  */
 
-public class SearchFragment extends BaseBackFragment {
+public class SearchFragment extends BaseBackFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ARG_TYPE = "arg_type";
     private String getType=" ";
+    private String getSearchText="";
 
-    private EditText searchEdit;
-    private ImageButton searchDelete;
+    private List<Job> jobList;
+
     List<String> mPlaces = new ArrayList<>();
     List<String> mTypes = new ArrayList<>();
     List<String> mOrders = new ArrayList<>();
 
+
+    private EditText searchEdit;
+    private ImageButton searchDelete;
 
     //筛选pop
     private CommonFilterPop mPopupWindow;
@@ -48,6 +58,12 @@ public class SearchFragment extends BaseBackFragment {
     CheckBox mTypeCb;
     LinearLayout mOrderAll;
     CheckBox mOrderCb;
+
+    //下拉刷新
+    SwipeRefreshLayout mRefreshLayout;
+    RecyclerView mRecy;
+
+    JobAdapter mAdapter;
 
     public static SearchFragment newInstance(){
         Bundle args = new Bundle();
@@ -74,9 +90,19 @@ public class SearchFragment extends BaseBackFragment {
     }
 
     private void initView(View view){
-        //上部搜索栏
+
         searchEdit = (EditText)view.findViewById(R.id.search_edit);
         searchDelete = (ImageButton) view.findViewById(R.id.search_delete);
+        mPlaceAll = (LinearLayout)view.findViewById(R.id.place_linear);
+        mPlaceCb = (CheckBox) view.findViewById(R.id.place_cb);
+        mTypeAll = (LinearLayout)view.findViewById(R.id.type_linear);
+        mTypeCb = (CheckBox) view.findViewById(R.id.type_cb);
+        mOrderAll = (LinearLayout)view.findViewById(R.id.order_linear);
+        mOrderCb = (CheckBox)view.findViewById(R.id.order_cb);
+        mRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.refresh_layout);
+        mRecy = (RecyclerView) view.findViewById(R.id.recycler_view);
+
+        //上部搜索栏设置
         searchDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,22 +133,33 @@ public class SearchFragment extends BaseBackFragment {
                 }
             }
         });
-        initDate();
 
-        Log.d("SearchFragment","getType ?= null"+String.valueOf(getType != null));
-        //firstTab快捷搜索1
+        //回车键监听搜索
+        searchEdit.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN){
+                    hideSoftInput();
+                    mRefreshLayout.setRefreshing(true);
+                    onRefresh();//搜索刷新
+                    Log.d("SearchFragment","actionID "+event.getAction());
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
+        Log.d("SearchFragment","getType ?= null "+String.valueOf(getType != null));
+        //getArgument刷新
         if(getType != null){
             searchEdit.setText(getType);
+            mRefreshLayout.setRefreshing(true);
+            onRefresh();
         }
 
         //筛选框
-        mPlaceAll = (LinearLayout) view.findViewById(R.id.place_linear);
-        mTypeAll = (LinearLayout) view.findViewById(R.id.type_linear);
-        mOrderAll = (LinearLayout) view.findViewById(R.id.order_linear);
-        mPlaceCb = (CheckBox) view.findViewById(R.id.place_cb);
-        mTypeCb = (CheckBox) view.findViewById(R.id.type_cb);
-        mOrderCb = (CheckBox) view.findViewById(R.id.order_cb);
-
+        initDate();
         mPlaceAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,6 +198,8 @@ public class SearchFragment extends BaseBackFragment {
                     public void onItemClick(AdapterView<?> adapterView,View view,int position,long l){
                         hidPopListView();
                         mPlaceCb.setText(mPlaces.get(position));
+                        mRefreshLayout.setRefreshing(true);
+                        onRefresh();
                     }
                 },mPlaceCb,mTypeCb,mOrderCb);
             }
@@ -174,6 +213,8 @@ public class SearchFragment extends BaseBackFragment {
                     public void onItemClick(AdapterView<?> adapterView,View view,int position,long l){
                         hidPopListView();
                         mTypeCb.setText(mTypes.get(position));
+                        mRefreshLayout.setRefreshing(true);
+                        onRefresh();
                     }
                 },mTypeCb,mPlaceCb,mOrderCb);
             }
@@ -187,12 +228,95 @@ public class SearchFragment extends BaseBackFragment {
                     public void onItemClick(AdapterView<?> adapterView,View view,int position,long l){
                         hidPopListView();
                         mOrderCb.setText(mOrders.get(position));
+                        mRefreshLayout.setRefreshing(true);
+                        onRefresh();
                     }
                 },mOrderCb,mPlaceCb,mTypeCb);
             }
         });
+
+        //RecyclerView
+        mRecy.setLayoutManager(new LinearLayoutManager(_mActivity));
+        mAdapter = new JobAdapter(_mActivity);
+        mRecy.setAdapter(mAdapter);
+
+       //下拉刷新设置
+        mRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+        mRefreshLayout.setOnRefreshListener(this);
+
+    }//initView();
+
+    @Override
+    public void onRefresh(){
+        mRefreshLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                jobList = initJobs();
+                mAdapter.setDatas(jobList);
+                mRefreshLayout.setRefreshing(false);
+
+            }
+        }, 2500);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try{
+//                    Thread.sleep(2000);
+//                }catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        jobList = initJobs();
+//                        mAdapter.setDatas(jobList);
+//                        mRefreshLayout.setRefreshing(false);
+//                    }
+//                });
+//            }
+//        }).start();
     }
 
+
+    //网络刷新数据
+    private List<Job> initJobs(){
+        //Switch（getSearchText);
+        List<Job> jobList = new ArrayList<>();
+        String workName[] = new String[]{"托管班兼职","招聘App推广"};
+        String workPay[] = new String[]{"40元/时","80元/天"};
+        String workPlace[] = new String[]{"金明>30KM","崂山区内"};
+        String publishTime[] = new String[]{"2017-08-17","2017-08-19 "};
+        String workType[] = new String[]{"家教 ", "其他"};
+        String PeopleNum[] = new String[]{"1人","2人"};
+        String jobSex[] = new String[]{"男","不限"};
+        String workData[] = new String[]{"8月-9月", "长期接受报名"};
+        String workTime[] = new String[]{" 下午3点到5点" ,"上午9点到下午5点"};
+        String workContent[] = new String[]{"要求：有初中语文教学经验，善于沟通表达，课堂活跃的大学生老师。\n 要求汉语言专业大学生。 \n男大学生优先，女大学生也可以考虑。\n有意者请联系选师无忧伍老师13610045402 ","一、直招APP下载兼职：\n1、负责去建材市场、五金机电市场、婚庆花店、广告打印、水果蔬菜批发市场。带着优惠券和小礼品给商户讲解货拉拉这款拉货平台，对于有意向商户教给他们下载使用货拉拉软件。\n2、要求踏实认真、飞机王勿扰。二、兼职绩效标准：1、底薪100+提成+奖金。2、工资第二天结，打到银行卡。\n" +
+                "\t\t\t\t\t\t\t\t\t\n" +
+                "\t\t\t\t\t\t\t\t\n"};
+        String havePeopleNum[] = new String[]{"10人","5人"};
+        int imageId[] = new int[]{R.drawable.work_image,R.drawable.work_image};
+
+
+        int index = (int) (Math.random() * 2);
+        for (int i = 0; i < 15; i++) {
+            Job job = new Job();
+            job.setWorkName(workName[index]);
+            job.setWorkPay(workPay[index]);
+            job.setWorkPlace(workPlace[index]);
+            job.setPublishTime(publishTime[index]);
+            job.setWorkType(workType[index]);
+            job.setPeopleNum(PeopleNum[index]);
+            job.setJobSex(jobSex[index]);
+            job.setWorkData(workData[index]);
+            job.setWorkTime(workTime[index]);
+            job.setWorkContent(workContent[index]);
+            job.setHavePeopleNum(havePeopleNum[index]);
+            job.setImageId(imageId[index]);
+            jobList.add(job);
+        }
+        return jobList;
+    }
 
 
     //初始化数据

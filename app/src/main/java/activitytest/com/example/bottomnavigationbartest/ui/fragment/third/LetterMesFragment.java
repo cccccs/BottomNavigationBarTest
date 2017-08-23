@@ -66,6 +66,7 @@ public class LetterMesFragment extends BaseFragment implements SwipeRefreshLayou
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
         mRefreshLayout.setOnRefreshListener(this);
+        mRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.blue));
 
         mRecy.setLayoutManager(new LinearLayoutManager(_mActivity));
         mRecy.setHasFixedSize(true);
