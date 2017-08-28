@@ -1,4 +1,4 @@
-package activitytest.com.example.bottomnavigationbartest.ui.fragment.second;
+package activitytest.com.example.bottomnavigationbartest.ui.fragment.fours;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,23 +9,23 @@ import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseFragment;
 
 /**
- * Created by pc on 2017/3/1.
+ * Created by pc on 2017/8/27.
  */
 
-public class HadPublishedFragment extends BaseFragment {
-    public static HadPublishedFragment instance(){
+public class PublishDoneFragment  extends BaseFragment{
+
+    public static PublishDoneFragment newInstance(){
+        PublishDoneFragment fragment = new PublishDoneFragment();
+
         Bundle args = new Bundle();
-        HadPublishedFragment fragment = new HadPublishedFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.publish_done,container,false);
-
         return view;
     }
-
 
 }

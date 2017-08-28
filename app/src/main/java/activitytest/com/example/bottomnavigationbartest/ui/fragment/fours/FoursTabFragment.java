@@ -34,7 +34,6 @@ import activitytest.com.example.bottomnavigationbartest.base.BaseMainFragment;
 import activitytest.com.example.bottomnavigationbartest.db.Choice;
 import activitytest.com.example.bottomnavigationbartest.db.User;
 import activitytest.com.example.bottomnavigationbartest.event.LoginCancelEvent;
-import activitytest.com.example.bottomnavigationbartest.event.LoginSuccessEvent;
 import activitytest.com.example.bottomnavigationbartest.event.StartBrotherEvent;
 import activitytest.com.example.bottomnavigationbartest.event.StartBrotherResEvent;
 import activitytest.com.example.bottomnavigationbartest.listener.OnItemClickListener;
@@ -45,7 +44,7 @@ import static activitytest.com.example.bottomnavigationbartest.db.User.UserType.
 /**
  * Created by pc on 2016/11/15.
  */
-public class FoursTabFragment extends BaseMainFragment  {
+public class FoursTabFragment extends BaseMainFragment implements LoginFragment.OnLoginSuccessListener {
     CardView loginCardView;
     CircleImageView ImgMys;
     TextView TvName;
@@ -319,23 +318,23 @@ public class FoursTabFragment extends BaseMainFragment  {
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe
-    public void loginSuccess(LoginSuccessEvent event){
-        TvName.setText(event.getAccount());
-        ImgMys.setImageResource(R.mipmap.ic_launcher);
-        logOut.setVisibility(View.VISIBLE);
-        Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
-        if(loginUser.getUserType()== student){
-            choiceList = initStuChoice();
-            adapter.setDatas(choiceList);
-            adapter.notifyDataSetChanged();
-        }else{
-            choiceList = initEmpChoice();
-            adapter.setDatas(choiceList);
-            adapter.notifyDataSetChanged();
-        }
-
-    }
+//    @Subscribe
+//    public void loginSuccess(LoginSuccessEvent event){
+//        TvName.setText(event.getAccount());
+//        ImgMys.setImageResource(R.mipmap.ic_launcher);
+//        logOut.setVisibility(View.VISIBLE);
+//        Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
+//        if(loginUser.getUserType()== student){
+//            choiceList = initStuChoice();
+//            adapter.setDatas(choiceList);
+//            adapter.notifyDataSetChanged();
+//        }else{
+//            choiceList = initEmpChoice();
+//            adapter.setDatas(choiceList);
+//            adapter.notifyDataSetChanged();
+//        }
+//
+//    }
 
     @Subscribe
     public void loginCancel(LoginCancelEvent event){
@@ -350,12 +349,21 @@ public class FoursTabFragment extends BaseMainFragment  {
 
 
     //接口实现改变界面
-//    @Override
-//    public void onLoginSuccess(String account) {
-//        TvName.setText(account);
-//        ImgMys.setImageResource(R.mipmap.ic_launcher);
-//
-//        Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
-//    }
+    @Override
+    public void onLoginSuccess(String account) {
+        TvName.setText(account);
+        ImgMys.setImageResource(R.mipmap.ic_launcher);
+        logOut.setVisibility(View.VISIBLE);
+        Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
+        if(loginUser.getUserType()== student){
+            choiceList = initStuChoice();
+            adapter.setDatas(choiceList);
+            adapter.notifyDataSetChanged();
+        }else{
+            choiceList = initEmpChoice();
+            adapter.setDatas(choiceList);
+            adapter.notifyDataSetChanged();
+        }
+    }
 
 }

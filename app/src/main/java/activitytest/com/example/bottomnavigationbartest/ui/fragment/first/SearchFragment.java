@@ -331,7 +331,6 @@ public class SearchFragment extends BaseBackFragment implements SwipeRefreshLayo
         mPlaces.add("四方区");
         mPlaces.add("城阳区");
         //初始化类型
-        mTypes.add("不限");
         mTypes.add("校内四助");
         mTypes.add("家教");
         mTypes.add("派单");

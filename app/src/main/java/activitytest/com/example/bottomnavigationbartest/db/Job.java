@@ -3,6 +3,8 @@ package activitytest.com.example.bottomnavigationbartest.db;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import static activitytest.com.example.bottomnavigationbartest.db.Job.JobState.doing;
+
 /**
  * Created by pc on 2017/2/15.
  */
@@ -19,9 +21,12 @@ public class Job implements Parcelable {
     private String workTime;
     private String workContent;
     private String havePeopleNum;
-
+    private JobState jobState;
     private int imageId;
     private int jobId;
+    public enum JobState{//兼职发布状态 审核中，真正报名 ，截止报名
+        check,doing,done
+    }
 
     public  Job(){
     }
@@ -40,6 +45,8 @@ public class Job implements Parcelable {
         havePeopleNum = in.readString();
         imageId = in.readInt();
         jobId = in.readInt();
+        jobState = doing;
+
     }
     public void setWorkType(String workType){this.workType = workType;}
     public void setPeopleNum(String peopleNum){this.PeopleNum = peopleNum;}
@@ -107,6 +114,14 @@ public class Job implements Parcelable {
 
     public int getJobId(){
         return jobId;
+    }
+
+    public void setJobState(JobState jobState){
+        this.jobState =jobState;
+    }
+
+    public JobState getJobState(){
+        return jobState;
     }
 
     @Override

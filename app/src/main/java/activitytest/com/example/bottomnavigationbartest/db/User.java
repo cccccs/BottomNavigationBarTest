@@ -17,6 +17,7 @@ public class User {
     private UserType userType= UserType.student;
     private Sex sex = Sex.man;
     private String Name;
+    private String phone;
     private boolean login=false;
 
     public User(){
@@ -79,4 +80,6 @@ public class User {
     public boolean getlogin(){
         return login;
     }
+    public void setPhone(String phone){this.phone = phone;}
+    public String getPhone(){return phone;}
 }

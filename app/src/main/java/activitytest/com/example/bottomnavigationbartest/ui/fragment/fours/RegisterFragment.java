@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ public class RegisterFragment extends BaseBackFragment {
     private EditText mEtAccount, mEtPassword, mEtPasswordConfirm;
     private Button mBtnRegister;
     private LoginFragment.OnLoginSuccessListener mOnLoginSuccessListener;
+    private CheckBox stuCheckBox,empCheckBox;
 
     public static RegisterFragment newInstance() {
 
@@ -35,12 +38,12 @@ public class RegisterFragment extends BaseBackFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (getPreFragment().getPreFragment().getTopChildFragment() instanceof LoginFragment.OnLoginSuccessListener) {
-            mOnLoginSuccessListener = (LoginFragment.OnLoginSuccessListener) getPreFragment().getPreFragment().getTopChildFragment();
-        } else {
-            throw new RuntimeException( getPreFragment().getPreFragment().getTopChildFragment().toString()
-                    + " must implement OnLoginSuccessListener");
-        }
+//        if (getPreFragment().getPreFragment().getTopChildFragment() instanceof LoginFragment.OnLoginSuccessListener) {
+//            mOnLoginSuccessListener = (LoginFragment.OnLoginSuccessListener) getPreFragment().getPreFragment().getTopChildFragment();
+//        } else {
+//            throw new RuntimeException( getPreFragment().getPreFragment().getTopChildFragment().toString()
+//                    + " must implement OnLoginSuccessListener");
+//        }
     }
 
     @Nullable
@@ -57,6 +60,30 @@ public class RegisterFragment extends BaseBackFragment {
         mEtPassword = (EditText) view.findViewById(R.id.et_password);
         mEtPasswordConfirm = (EditText) view.findViewById(R.id.et_password_confirm);
         mBtnRegister = (Button) view.findViewById(R.id.btn_register);
+        stuCheckBox = (CheckBox) view.findViewById(R.id.cb1);
+        empCheckBox = (CheckBox)view.findViewById(R.id.cb2);
+
+        stuCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    empCheckBox.setChecked(false);
+                }else{
+                    empCheckBox.setChecked(true);
+                }
+            }
+        });
+
+        empCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    stuCheckBox.setChecked(false);
+                }else{
+                    stuCheckBox.setChecked(true);
+                }
+            }
+        });
 
         showSoftInput(mEtAccount);
 
@@ -83,8 +110,10 @@ public class RegisterFragment extends BaseBackFragment {
                 }
 
                 // 注册成功
-                mOnLoginSuccessListener.onLoginSuccess(strAccount);
-                popTo(LoginFragment.class, true);
+                //mOnLoginSuccessListener.onLoginSuccess(strAccount);
+                //popTo(LoginFragment.class, true);
+                pop();
+                Toast.makeText(_mActivity, "注册成功，请登录！", Toast.LENGTH_SHORT).show();
             }
         });
     }

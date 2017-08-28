@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,7 +23,6 @@ import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseBackFragment;
 import activitytest.com.example.bottomnavigationbartest.db.User;
 import activitytest.com.example.bottomnavigationbartest.event.LoginCancelEvent;
-import activitytest.com.example.bottomnavigationbartest.event.LoginSuccessEvent;
 import activitytest.com.example.bottomnavigationbartest.ui.fragment.MainFragment;
 
 /**
@@ -31,6 +32,7 @@ public class LoginFragment extends BaseBackFragment {
     private EditText mEtAccount, mEtPassword;
     private Button mBtnLogin, mBtnRegister;
     private MyApplication mApplication;
+    private CheckBox stuCheckBox,empCheckBox;
     private boolean signCorrect=true;
     private OnLoginSuccessListener mOnLoginSuccessListener;
 
@@ -58,11 +60,11 @@ public class LoginFragment extends BaseBackFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (getPreFragment().getTopChildFragment() instanceof OnLoginSuccessListener) {
-//            mOnLoginSuccessListener = (OnLoginSuccessListener) getPreFragment().getTopChildFragment();
-//        } else {
-//            throw new RuntimeException(getPreFragment().getTopChildFragment().toString() + " must implement OnLoginSuccessListener");
-//        }
+        if (getPreFragment().getTopChildFragment() instanceof OnLoginSuccessListener) {
+            mOnLoginSuccessListener = (OnLoginSuccessListener) getPreFragment().getTopChildFragment();
+        } else {
+            throw new RuntimeException(getPreFragment().getTopChildFragment().toString() + " must implement OnLoginSuccessListener");
+        }
     }
     @Override
     public void onStart(){
@@ -102,7 +104,30 @@ public class LoginFragment extends BaseBackFragment {
         mEtPassword = (EditText) view.findViewById(R.id.et_password);
         mBtnLogin = (Button) view.findViewById(R.id.btn_login);
         mBtnRegister = (Button) view.findViewById(R.id.btn_register);
+        stuCheckBox = (CheckBox) view.findViewById(R.id.cb1);
+        empCheckBox = (CheckBox)view.findViewById(R.id.cb2);
 
+        stuCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    empCheckBox.setChecked(false);
+                }else{
+                    empCheckBox.setChecked(true);
+                }
+            }
+        });
+
+        empCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    stuCheckBox.setChecked(false);
+                }else{
+                    stuCheckBox.setChecked(true);
+                }
+            }
+        });
         toolbar.setTitle(R.string.login);
         initToolbarNav(toolbar);
 
@@ -126,12 +151,13 @@ public class LoginFragment extends BaseBackFragment {
                     SharedPreferences.Editor editor  =  getActivity().getSharedPreferences("data",Context.MODE_PRIVATE).edit();
                     editor.putString("account",strAccount);
                     editor.putString("password",strPassword);
+                    editor.putString("userType",(empCheckBox.isChecked()?User.UserType.business:User.UserType.student).toString());
                     editor.apply();
                 }
 
 
                 User user = mApplication.getLoginUser();
-                if(strAccount.equals("111") ) {
+                if(empCheckBox.isChecked() ) {
                     user.setUserType(User.UserType.business);
                     Bundle bundle = new Bundle();
                     bundle.putString(MainFragment.KEY_RESULT_TYPE,user.getUserType().toString());
@@ -147,9 +173,9 @@ public class LoginFragment extends BaseBackFragment {
                     user.setLogin(true);
 
                 // 登录成功 eventbus上传发布事件
-                EventBus.getDefault().post(new LoginSuccessEvent(strAccount));
+              //  EventBus.getDefault().post(new LoginSuccessEvent(strAccount));
                 hideSoftInput();
-//                mOnLoginSuccessListener.onLoginSuccess(strAccount);
+              mOnLoginSuccessListener.onLoginSuccess(strAccount);
                 pop();
             }
         });

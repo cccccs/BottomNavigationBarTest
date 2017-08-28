@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:gravity="center_horizontal"
@@ -16,25 +17,28 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:theme="@style/MyInputTextLayout">
 
                 <EditText
                     android:id="@+id/et_account"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="用户名"
+                    android:textColor="@color/primary_text"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:textColor="@color/blue"
                     android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:theme="@style/MyInputTextLayout">
 
                 <EditText
                     android:id="@+id/et_password"
@@ -46,14 +50,15 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:textColor="@color/blue"
+                    android:textColor="@color/primary_text"
                     android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:theme="@style/MyInputTextLayout">
 
                 <EditText
                     android:id="@+id/et_password_confirm"
@@ -62,10 +67,30 @@
                     android:hint="确认密码"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:textColor="@color/blue"
+                    android:textColor="@color/primary_text"
                     android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:id="@+id/cb1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:theme="@style/MyCheckBox"
+                    android:checked="true"
+                    android:text="学生"/>
+                <CheckBox
+                    android:id="@+id/cb2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    app:theme="@style/MyCheckBox"
+                    android:text="商家"/>
+            </LinearLayout>
+
 
 
             <Button

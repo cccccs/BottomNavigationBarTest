@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -74,10 +73,12 @@ public class MainFragment extends BaseFragment {
         SharedPreferences pref = getActivity().getSharedPreferences("data", Context.MODE_PRIVATE);
         String strAccount = pref.getString("account","");
         String strPassword = pref.getString("password","");
+        String strUserType = pref.getString("userType","");
+
 
         if(strAccount.equals("") ) {
 
-        }else if(strAccount.equals("111")){
+        }else if(strUserType.equals("business")){
             loginUser.setUserType(User.UserType.business);
             loginUser.setName(strAccount);
             loginUser.setLogin(true);
@@ -197,7 +198,7 @@ public class MainFragment extends BaseFragment {
                 stuLogin = true;
             }
 
-            Toast.makeText(_mActivity, "登录成功", Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(_mActivity, "登录成功", Toast.LENGTH_SHORT).show();
         }
 
     }
