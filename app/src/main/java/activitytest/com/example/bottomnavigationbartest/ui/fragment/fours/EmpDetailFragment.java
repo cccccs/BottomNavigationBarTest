@@ -13,22 +13,24 @@ import activitytest.com.example.bottomnavigationbartest.base.BaseBackFragment;
  * Created by pc on 2017/8/20.
  */
 
-public class StuSendFragment extends BaseBackFragment {
+public class EmpDetailFragment extends BaseBackFragment {
     Toolbar toolbar;
-    public static StuSendFragment newInstance(){
+    public static EmpDetailFragment newInstance(){
         Bundle args = new Bundle();
 
-        StuSendFragment fragment = new StuSendFragment();
+        EmpDetailFragment fragment = new EmpDetailFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_stu_send,container,false);
+        View view = inflater.inflate(R.layout.fragment_all_detail,container,false);
         toolbar=(Toolbar)view.findViewById(R.id.toolbar);
-        toolbar.setTitle("我的申请");
+        toolbar.setTitle("商家简介");
         initToolbarNav(toolbar);
+
         return view;
     }
+
 }

@@ -16,6 +16,7 @@ import org.greenrobot.eventbus.Subscribe;
 import activitytest.com.example.bottomnavigationbartest.MyApplication;
 import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseFragment;
+import activitytest.com.example.bottomnavigationbartest.db.Employer;
 import activitytest.com.example.bottomnavigationbartest.db.User;
 import activitytest.com.example.bottomnavigationbartest.event.LoginCancelEvent;
 import activitytest.com.example.bottomnavigationbartest.event.LoginSuccessEvent;
@@ -75,23 +76,27 @@ public class MainFragment extends BaseFragment {
         String strPassword = pref.getString("password","");
         String strUserType = pref.getString("userType","");
 
-
+        Log.d("MainFragment",strAccount+"strAccount");
         if(strAccount.equals("") ) {
 
         }else if(strUserType.equals("business")){
-            loginUser.setUserType(User.UserType.business);
+        //    loginUser.setUserType(User.UserType.business);
             loginUser.setName(strAccount);
             loginUser.setLogin(true);
             loginUser.setUserPassWord(strPassword);
+            mApplication.EmpLogin(loginUser);
+            loginUser = mApplication.getLoginUser();
             stuLogin=false;
         }else{
-            loginUser.setUserType(User.UserType.student);
+      //    loginUser.setUserType(User.UserType.student);
             loginUser.setName(strAccount);
             loginUser.setLogin(true);
             loginUser.setUserPassWord(strPassword);
+            mApplication.StuLogin(loginUser);
+            loginUser = mApplication.getLoginUser();
             stuLogin=true;
         }
-
+        Log.d("MainActivity","loginUser.getlogin()"+loginUser.getlogin());
         if (savedInstanceState == null) {
             stuFragments[FIRST]=mFragments[FIRST] = FirstTabFragment.newInstance();
             empFragments[FIRST]=mFragments[SECOND] = SecondTabFragment.newInstance();
@@ -99,14 +104,15 @@ public class MainFragment extends BaseFragment {
             empFragments[THIRD]=stuFragments[THIRD]=mFragments[FOURS] = FoursTabFragment.newInstance();
 
 
-            if (loginUser.getUserType() == User.UserType.student) {
-                loadMultipleRootFragment(R.id.fl_tab_container, FIRST,
+            if (loginUser instanceof Employer) {
+                loadMultipleRootFragment(R.id.fl_tab_container, SECOND,
                         mFragments[FIRST],
                         mFragments[SECOND],
                         mFragments[THIRD],
                         mFragments[FOURS]);
+
             }else{
-                loadMultipleRootFragment(R.id.fl_tab_container, SECOND,
+                loadMultipleRootFragment(R.id.fl_tab_container, FIRST,
                         mFragments[FIRST],
                         mFragments[SECOND],
                         mFragments[THIRD],
@@ -137,17 +143,18 @@ public class MainFragment extends BaseFragment {
         bottomBar = (BottomBar) view.findViewById(R.id.bottomBar);
 
 
-
-        if (loginUser.getUserType() == User.UserType.student) {
-            bottomItems[0] = new BottomBarTab(_mActivity, R.drawable.ic_list_black_24dp, "主页");
+        Log.d("MainFragment","loginUser instanceof Employer "+String.valueOf(loginUser instanceof Employer));
+        if (loginUser instanceof Employer) {
+            bottomItems[0] = new BottomBarTab(_mActivity, R.drawable.ic_add_black_24dp, "发布");
             bottomItems[1] = new BottomBarTab(_mActivity, R.drawable.ic_notifications_none_black_24dp, "消息");
             bottomItems[2] = new BottomBarTab(_mActivity, R.drawable.ic_person_outline_black_24dp, "我");
             bottomBar
                     .addItem(bottomItems[0])
                     .addItem(bottomItems[1])
                     .addItem(bottomItems[2]);
+
         } else {
-            bottomItems[0] = new BottomBarTab(_mActivity, R.drawable.ic_add_black_24dp, "发布");
+            bottomItems[0] = new BottomBarTab(_mActivity, R.drawable.ic_list_black_24dp, "主页");
             bottomItems[1] = new BottomBarTab(_mActivity, R.drawable.ic_notifications_none_black_24dp, "消息");
             bottomItems[2] = new BottomBarTab(_mActivity, R.drawable.ic_person_outline_black_24dp, "我");
             bottomBar
@@ -159,10 +166,11 @@ public class MainFragment extends BaseFragment {
         bottomBar.setOnTabSelectedListener(new BottomBar.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position,int prePosition) {
-                if(loginUser.getUserType()== User.UserType.student) {
-                    showHideFragment(stuFragments[position], stuFragments[prePosition]);
-                }else {
+                if(loginUser instanceof Employer) {
                     showHideFragment(empFragments[position], empFragments[prePosition]);
+
+                }else {
+                    showHideFragment(stuFragments[position], stuFragments[prePosition]);
                 }
 
             }
@@ -193,9 +201,11 @@ public class MainFragment extends BaseFragment {
             if (userType.equals("business")) {
                 stuLogin = false;
                 bottomBar.replaceTab(0, new BottomBarTab(_mActivity, R.drawable.ic_add_black_24dp, "发布"));
+                loginUser = mApplication.getLoginUser();
             }else if(userType.equals("student")){
                 bottomBar.replaceTab(0,new BottomBarTab(_mActivity, R.drawable.ic_list_black_24dp, "主页"));
                 stuLogin = true;
+                loginUser = mApplication.getLoginUser();
             }
 
           //  Toast.makeText(_mActivity, "登录成功", Toast.LENGTH_SHORT).show();
@@ -219,6 +229,7 @@ public class MainFragment extends BaseFragment {
     }
     @Subscribe
     public void loginCancel(LoginCancelEvent event){
+        loginUser = mApplication.getLoginUser();
         if(!stuLogin){
             bottomBar.replaceTab(0,new BottomBarTab(_mActivity, R.drawable.ic_list_black_24dp, "主页"));
             stuLogin = true;

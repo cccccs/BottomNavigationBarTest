@@ -27,7 +27,7 @@
                     android:id="@+id/et_account"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="用户名"
+                    android:hint="账号"
                     android:textColor="@color/primary_text"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"

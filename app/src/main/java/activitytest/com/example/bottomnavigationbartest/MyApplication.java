@@ -2,6 +2,8 @@ package activitytest.com.example.bottomnavigationbartest;
 
 import android.app.Application;
 
+import activitytest.com.example.bottomnavigationbartest.db.Employer;
+import activitytest.com.example.bottomnavigationbartest.db.Student;
 import activitytest.com.example.bottomnavigationbartest.db.User;
 
 /**
@@ -18,10 +20,19 @@ public class MyApplication extends Application {
         return loginUser;
     }
 
-    public void userLogin(User user){
-        loginUser.setUserId(user.getUserId());
-        loginUser.setUserName(user.getName());
+    public void StuLogin(User stu){
+        loginUser = new Student();
+        loginUser.setName(stu.getName());
+        loginUser.setUserPassWord(stu.getUserPassWord());
+        loginUser.setLogin(true);
     }
+    public void EmpLogin(User employer){
+        loginUser = new Employer();
+        loginUser.setName(employer.getName());
+        loginUser.setUserPassWord(employer.getUserPassWord());
+        loginUser.setLogin(true);
+    }
+
 
     public void userLogout(){
         loginUser = new User();

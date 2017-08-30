@@ -32,14 +32,13 @@ import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.adpater.ChoiceAdapter;
 import activitytest.com.example.bottomnavigationbartest.base.BaseMainFragment;
 import activitytest.com.example.bottomnavigationbartest.db.Choice;
+import activitytest.com.example.bottomnavigationbartest.db.Employer;
 import activitytest.com.example.bottomnavigationbartest.db.User;
 import activitytest.com.example.bottomnavigationbartest.event.LoginCancelEvent;
 import activitytest.com.example.bottomnavigationbartest.event.StartBrotherEvent;
 import activitytest.com.example.bottomnavigationbartest.event.StartBrotherResEvent;
 import activitytest.com.example.bottomnavigationbartest.listener.OnItemClickListener;
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static activitytest.com.example.bottomnavigationbartest.db.User.UserType.student;
 
 /**
  * Created by pc on 2016/11/15.
@@ -146,7 +145,8 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
         adapter.setOnItemClickListener(new OnItemClickListener() {//点击事件
             @Override
             public void onItemClick(int position, View view, RecyclerView.ViewHolder vh) {
-                Log.d("MainActivity","xxxx");
+                Log.d("MainActivity","loginUser.getlogin()"+loginUser.getlogin());
+                Log.d("MainFragment","loginUser instanceof Employer "+String.valueOf(loginUser instanceof Employer));
                 if(!loginUser.getlogin()){
                     AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                     dialog.setTitle("未登录");
@@ -167,8 +167,23 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
 
 
                 }else{
-                    if(loginUser.getUserType()==student){
+                    if(loginUser instanceof Employer){
+                        Log.d("MainActivity","FoursStop");
+                        switch (position){
 
+                            case 0:
+                                EventBus.getDefault().post(new StartBrotherEvent(AllMyselfFragment.newInstance()));
+                                break;
+                            case 1:
+                                EventBus.getDefault().post(new StartBrotherEvent(EmpDetailFragment.newInstance()));
+                                break;
+                            case 2:
+                                EventBus.getDefault().post(new StartBrotherEvent(EmpPublishFragment.newInstance()));
+                                break;
+                        }
+
+
+                    }else {
                         switch (position){
                             case 0:
                                 Log.d("MainActivity","ssss1");
@@ -176,31 +191,17 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
                                 break;
                             case 1:
                                 Log.d("MainActivity","ssss2");
-                                EventBus.getDefault().post(new StartBrotherEvent(AllDetailFragment.newInstance()));
+                                EventBus.getDefault().post(new StartBrotherEvent(StuStarFragment.newInstance()));
                                 break;
                             case 2:
                                 Log.d("MainActivity","ssss3");
-                                EventBus.getDefault().post(new StartBrotherEvent(StuStarFragment.newInstance()));
+                                EventBus.getDefault().post(new StartBrotherEvent(StuJobFragment.newInstance()));
                                 break;
-                            case 3:
-                                Log.d("MainActivity","ssss4");
-                                EventBus.getDefault().post(new StartBrotherEvent(StuSendFragment.newInstance()));
-                                break;
+//                            case 3:
+//                                Log.d("MainActivity","ssss4");
+//                                EventBus.getDefault().post(new StartBrotherEvent());
+//                                break;
                         }
-                    }else {
-                        Log.d("MainActivity","FoursStop");
-                        switch (position){
-
-                        case 0:
-                            EventBus.getDefault().post(new StartBrotherEvent(AllMyselfFragment.newInstance()));
-                            break;
-                        case 1:
-                            EventBus.getDefault().post(new StartBrotherEvent(AllDetailFragment.newInstance()));
-                            break;
-                        case 2:
-                            EventBus.getDefault().post(new StartBrotherEvent(EmpPublishFragment.newInstance()));
-                            break;
-                    }
                     }
                 }
             }
@@ -221,12 +222,13 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
            logOut.setVisibility(View.VISIBLE);
            TvName.setText(loginUser.getName());
            ImgMys.setImageResource(R.mipmap.ic_launcher);
-           if(loginUser.getUserType()==student){
-               choiceList = initStuChoice();
+           if(loginUser instanceof Employer){
+               choiceList = initEmpChoice();
                adapter.setDatas(choiceList);
                adapter.notifyDataSetChanged();
+
            }else{
-               choiceList = initEmpChoice();
+               choiceList = initStuChoice();
                adapter.setDatas(choiceList);
                adapter.notifyDataSetChanged();
            }
@@ -253,10 +255,7 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
                         SharedPreferences.Editor editor = getActivity().getSharedPreferences("data", Context.MODE_PRIVATE).edit();
                         editor.clear();
                         editor.apply();
-                        loginUser.setUserType(student);
-                        loginUser.setName("");
-                        loginUser.setLogin(false);
-                        loginUser.setUserPassWord("");
+                        mApplication.userLogout();
                         EventBus.getDefault().post(new StartBrotherResEvent(LoginFragment.newInstance()));
                     }
                 });
@@ -274,9 +273,9 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
     private List<Choice> initStuChoice(){
         List<Choice> choiceList = new ArrayList<>();
         Choice item1 = new Choice();
-        item1.setChoice("个人资料");
-        item1.setImageId(R.drawable.ic_create_black_24dp);
-        choiceList.add(item1);
+//        item1.setChoice("个人资料");
+//        item1.setImageId(R.drawable.ic_create_black_24dp);
+//        choiceList.add(item1);
         Choice item2 = new Choice();
         item2.setChoice("我的简历");
         item2.setImageId(R.drawable.ic_assignment_black_24dp);
@@ -301,7 +300,7 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
         choiceList.add(item1);
         Choice item2 = new Choice();
         item2.setChoice("商家简介");
-        item2.setImageId(R.drawable.ic_assignment_black_24dp);
+        item2.setImageId(R.drawable.ic_location_city_black_24dp);
         choiceList.add(item2);
         Choice item5 = new Choice();
         item5.setChoice("我的发布");
@@ -338,6 +337,7 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
 
     @Subscribe
     public void loginCancel(LoginCancelEvent event){
+        loginUser = mApplication.getLoginUser();
         if(!loginUser.getlogin()){
             logOut.setVisibility(View.INVISIBLE);
             TvName.setText("请登录/注册");
@@ -355,12 +355,14 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
         ImgMys.setImageResource(R.mipmap.ic_launcher);
         logOut.setVisibility(View.VISIBLE);
         Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
-        if(loginUser.getUserType()== student){
-            choiceList = initStuChoice();
+        loginUser = mApplication.getLoginUser();
+        if(loginUser instanceof Employer){
+            choiceList = initEmpChoice();
             adapter.setDatas(choiceList);
             adapter.notifyDataSetChanged();
+
         }else{
-            choiceList = initEmpChoice();
+            choiceList = initStuChoice();
             adapter.setDatas(choiceList);
             adapter.notifyDataSetChanged();
         }

@@ -21,9 +21,12 @@ import org.greenrobot.eventbus.EventBus;
 import activitytest.com.example.bottomnavigationbartest.MyApplication;
 import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseBackFragment;
+import activitytest.com.example.bottomnavigationbartest.db.Employer;
 import activitytest.com.example.bottomnavigationbartest.db.User;
 import activitytest.com.example.bottomnavigationbartest.event.LoginCancelEvent;
 import activitytest.com.example.bottomnavigationbartest.ui.fragment.MainFragment;
+
+import static activitytest.com.example.bottomnavigationbartest.db.User.UserType.student;
 
 /**
  * Created by YoKeyword on 16/2/14.
@@ -35,6 +38,7 @@ public class LoginFragment extends BaseBackFragment {
     private CheckBox stuCheckBox,empCheckBox;
     private boolean signCorrect=true;
     private OnLoginSuccessListener mOnLoginSuccessListener;
+    private User loginUser;
 
 
     public static LoginFragment newInstance() {
@@ -92,6 +96,7 @@ public class LoginFragment extends BaseBackFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         mApplication = (MyApplication)getActivity().getApplication();
+        loginUser = mApplication.getLoginUser();
 
         initView(view);
         return view;
@@ -151,26 +156,34 @@ public class LoginFragment extends BaseBackFragment {
                     SharedPreferences.Editor editor  =  getActivity().getSharedPreferences("data",Context.MODE_PRIVATE).edit();
                     editor.putString("account",strAccount);
                     editor.putString("password",strPassword);
-                    editor.putString("userType",(empCheckBox.isChecked()?User.UserType.business:User.UserType.student).toString());
+                    editor.putString("userType",(empCheckBox.isChecked()?User.UserType.business: student).toString());
                     editor.apply();
                 }
 
 
-                User user = mApplication.getLoginUser();
-                if(empCheckBox.isChecked() ) {
-                    user.setUserType(User.UserType.business);
+                if(empCheckBox.isChecked()) {
+                    loginUser.setName(strAccount);
+                    loginUser.setLogin(true);
+                    loginUser.setUserPassWord(strPassword);
+                    mApplication.EmpLogin(loginUser);
+
                     Bundle bundle = new Bundle();
-                    bundle.putString(MainFragment.KEY_RESULT_TYPE,user.getUserType().toString());
+                    bundle.putString(MainFragment.KEY_RESULT_TYPE,"business");
                     setFragmentResult(RESULT_OK, bundle);
                 }else {
-                    user.setUserType(User.UserType.student);
+                    loginUser.setName(strAccount);
+                    loginUser.setLogin(true);
+                    loginUser.setUserPassWord(strPassword);
+                    mApplication.StuLogin(loginUser);
+
                     Bundle bundle = new Bundle();
-                    bundle.putString(MainFragment.KEY_RESULT_TYPE,user.getUserType().toString());
+                    bundle.putString(MainFragment.KEY_RESULT_TYPE,"student");
                     setFragmentResult(RESULT_OK, bundle);
                 }
-                    user.setUserName(strAccount);
-                    user.setUserPassWord(strPassword);
-                    user.setLogin(true);
+
+
+                Log.d("MainActivity","loginUser.getlogin()"+loginUser.getlogin());
+                Log.d("MainFragment","loginUser instanceof Employer "+String.valueOf(loginUser instanceof Employer));
 
                 // 登录成功 eventbus上传发布事件
               //  EventBus.getDefault().post(new LoginSuccessEvent(strAccount));

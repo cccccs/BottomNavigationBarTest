@@ -1,10 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <include layout="@layout/mtoolbar"/>
-    <TextView
-        android:layout_width="wrap_content"
+    <android.support.design.widget.AppBarLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="个人资料"/>
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:contentInsetStart="0dp"
+            app:titleTextAppearance="@style/Toolbar_TextAppearance_White">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="个人资料"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:layout_centerVertical="true"
+                    />
+                <ImageView
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/ic_check_black_24dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+            </RelativeLayout>
+            </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_mys"
+                android:layout_margin="6dp"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+
+                android:src="@mipmap/ic_launcher"
+                app:civ_border_width="2dp"
+                app:cardCornerRadius="0dp"
+                app:civ_border_color="#FFFFFF"/>
+
+            </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/myself_person"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"/>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:theme="@style/MyInputTextLayout"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp">
+
+                    <EditText
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="姓名"
+                        android:textColor="@color/primary_text"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="textPersonName"
+                        android:maxLines="1"
+                        android:singleLine="true"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/myself_age"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"/>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:theme="@style/MyInputTextLayout"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp">
+
+                    <EditText
+                        android:id="@+id/age"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="年龄"
+                        android:textColor="@color/primary_text"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:singleLine="true"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/myself_sex"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="5dp">
+                    <CheckBox
+                        android:id="@+id/cb1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:theme="@style/MyCheckBox"
+                        android:checked="true"
+                        android:text="男"/>
+                    <CheckBox
+                        android:id="@+id/cb2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        app:theme="@style/MyCheckBox"
+                        android:text="女"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/myself_phone"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"/>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:theme="@style/MyInputTextLayout"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp">
+
+                    <EditText
+                        android:id="@+id/phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="手机号码"
+                        android:textColor="@color/primary_text"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:singleLine="true"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linear_grade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/myself_grade"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"/>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:theme="@style/MyInputTextLayout"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp">
+
+                    <EditText
+                        android:id="@+id/grade"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="年级"
+                        android:textColor="@color/primary_text"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:singleLine="true"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

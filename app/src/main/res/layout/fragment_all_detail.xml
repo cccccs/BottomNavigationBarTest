@@ -1,10 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <include layout="@layout/mtoolbar"/>
-    <TextView
+    <android.support.design.widget.AppBarLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="个人简介" />
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:contentInsetStart="0dp"
+            app:titleTextAppearance="@style/Toolbar_TextAppearance_White">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="商家简介"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:layout_centerVertical="true"
+                    />
+                <ImageView
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/ic_check_black_24dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_marginBottom="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/company_name"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginEnd="8dp"/>
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:theme="@style/MyInputTextLayout"
+                            android:layout_gravity="center"
+                            android:layout_margin="5dp">
+
+                            <EditText
+                                android:id="@+id/name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="商家名称"
+                                android:textColor="@color/primary_text"
+                                android:imeOptions="actionUnspecified"
+                                android:inputType="textPersonName"
+                                android:maxLines="1"
+                                android:singleLine="true"/>
+
+                        </android.support.design.widget.TextInputLayout>
+                    </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/company_location"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"/>
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:theme="@style/MyInputTextLayout"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="商家地址"
+                            android:textColor="@color/primary_text"
+                            android:imeOptions="actionUnspecified"
+                            android:inputType="textPersonName"
+                            android:maxLines="1"
+                            android:singleLine="true"/>
+
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/company_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"/>
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:theme="@style/MyInputTextLayout"
+                        android:layout_gravity="center"
+                        android:background="#eeeeee"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="商家简介"
+                            android:textColor="@color/primary_text"
+                            android:imeOptions="actionUnspecified"
+                            android:minLines="15"
+                            android:background="@null"
+                            android:inputType="textMultiLine"
+                            android:singleLine="true"/>
+
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
