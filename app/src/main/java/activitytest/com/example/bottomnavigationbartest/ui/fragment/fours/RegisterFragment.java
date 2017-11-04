@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,21 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseBackFragment;
+import activitytest.com.example.bottomnavigationbartest.util.HttpUtil;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+
 
 /**
  * Created by YoKeyword on 16/2/14.
@@ -25,6 +39,8 @@ public class RegisterFragment extends BaseBackFragment {
     private Button mBtnRegister;
     private LoginFragment.OnLoginSuccessListener mOnLoginSuccessListener;
     private CheckBox stuCheckBox,empCheckBox;
+
+    public static final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
 
     public static RegisterFragment newInstance() {
 
@@ -109,14 +125,74 @@ public class RegisterFragment extends BaseBackFragment {
                     return;
                 }
 
+                String address ;
+                if(!empCheckBox.isChecked()) {
+                    address= "http://119.29.3.128:8080/JobHunter/JobSeeker/signin";
+                }else{
+                    address = "http://119.29.3.128:8080/JobHunter/Employer/signin";
+                }
+
+
+
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("username", strAccount);
+                    json.put("password",strPassword);
+                }catch (JSONException e){
+                    Toast.makeText(_mActivity, e+ "", Toast.LENGTH_SHORT).show();
+                }
+                RequestBody requestBody = RequestBody.create(JSON,json.toString());
+
+                HttpUtil.postOkHttpRequest(address, requestBody, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.d("RegisterFragment","RegisterFragment"+e.toString());
+                        _mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(_mActivity, "注册失败！", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        Log.d("LoginFragment","MMMMMMMMM"+response.body().string());
+
+//                        if(!Utility.handleStatusResponse(response.body().string())){
+//                            _mActivity.runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    Toast.makeText(_mActivity, "注册成功，请登录！", Toast.LENGTH_SHORT).show();
+//
+//                                }
+//                            });
+//                        }else{
+//                            _mActivity.runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    Toast.makeText(_mActivity, "注册失败！", Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+//
+//                        }
+
+
+                    }
+                });
+
+
                 // 注册成功
                 //mOnLoginSuccessListener.onLoginSuccess(strAccount);
                 //popTo(LoginFragment.class, true);
                 pop();
-                Toast.makeText(_mActivity, "注册成功，请登录！", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
+
 
     @Override
     public void onHiddenChanged(boolean hidden) {

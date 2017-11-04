@@ -9,9 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
 
 import activitytest.com.example.bottomnavigationbartest.MyApplication;
 import activitytest.com.example.bottomnavigationbartest.R;
@@ -29,8 +35,16 @@ import activitytest.com.example.bottomnavigationbartest.ui.fragment.second.Secon
 import activitytest.com.example.bottomnavigationbartest.ui.fragment.third.ThirdTabFragment;
 import activitytest.com.example.bottomnavigationbartest.ui.view.BottomBar;
 import activitytest.com.example.bottomnavigationbartest.ui.view.BottomBarTab;
+import activitytest.com.example.bottomnavigationbartest.util.HttpUtil;
+import activitytest.com.example.bottomnavigationbartest.util.Utility;
 import me.yokeyword.fragmentation.SupportFragment;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
+import static activitytest.com.example.bottomnavigationbartest.ui.fragment.fours.RegisterFragment.JSON;
 import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 
 /**
@@ -72,26 +86,31 @@ public class MainFragment extends BaseFragment {
         mApplication =(MyApplication)getActivity().getApplication();
         loginUser = mApplication.getLoginUser();
         SharedPreferences pref = getActivity().getSharedPreferences("data", Context.MODE_PRIVATE);
-        String strAccount = pref.getString("account","");
-        String strPassword = pref.getString("password","");
-        String strUserType = pref.getString("userType","");
-
+        final String strAccount = pref.getString("account","");
+        final String strPassword = pref.getString("password","");
+        final String strUserType = pref.getString("userType","");
         Log.d("MainFragment",strAccount+"strAccount");
         if(strAccount.equals("") ) {
 
         }else if(strUserType.equals("business")){
         //    loginUser.setUserType(User.UserType.business);
+            login(strAccount,strPassword,0);
+
             loginUser.setName(strAccount);
             loginUser.setLogin(true);
             loginUser.setUserPassWord(strPassword);
+//
             mApplication.EmpLogin(loginUser);
             loginUser = mApplication.getLoginUser();
+
             stuLogin=false;
         }else{
       //    loginUser.setUserType(User.UserType.student);
+            login(strAccount,strPassword,1);
             loginUser.setName(strAccount);
             loginUser.setLogin(true);
             loginUser.setUserPassWord(strPassword);
+
             mApplication.StuLogin(loginUser);
             loginUser = mApplication.getLoginUser();
             stuLogin=true;
@@ -137,7 +156,88 @@ public class MainFragment extends BaseFragment {
         return view;
 
     }
+    public void  login(final String strAccount,final  String strPassword,int type){
+        String address;
+        //和数据库对比是否存在此账户
+        if(type==1) {
+            address  = "http://119.29.3.128:8080/JobHunter/JobSeeker/login";
+        }else{
+            address = "http://119.29.3.128:8080/JobHunter/Employer/login";
+        }
 
+        JSONObject json = new JSONObject();
+        try {
+            json.put("username", strAccount);
+            json.put("password",strPassword);
+        }catch (JSONException e){
+            Toast.makeText(_mActivity, e+ "", Toast.LENGTH_SHORT).show();
+        }
+
+
+        RequestBody requestBody = RequestBody.create(JSON,json.toString());
+
+        HttpUtil.postOkHttpRequest(address,requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("LoginFragment",e.toString());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(_mActivity,"登录失败", Toast.LENGTH_SHORT).show();
+
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(!Utility.handleStatusResponse(response.body().string())){
+                    _mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(_mActivity, "用户名或密码名错误!", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }else{
+                    _mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(_mActivity, "刷新成功！", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+
+                //获取session的操作，session放在cookie头，且取出后含有“；”，取出后为下面的 s （也就是jsesseionid）
+                Headers headers = response.headers();
+                Log.d("info_headers", "header " + headers);
+                List<String> cookies = headers.values("Set-Cookie");
+                String session = cookies.get(0);
+                Log.d("info_cookies", "onResponse-size: " + cookies);
+                String sessionStr;
+                sessionStr = session.substring(0, session.indexOf(";"));
+                Log.i("info_s", "session is  :" + sessionStr);
+
+                int userId;
+                try {
+                    JSONObject object = new JSONObject(response.body().toString());
+                     userId = object.getInt("userId");
+                    loginUser.setUserId(userId);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                    loginUser.setSession(sessionStr);
+                Log.i("info_s", "loginUser.setStringStr" + sessionStr);
+
+
+            }
+        });
+
+
+
+    }
     private void initView(View view) {
         EventBus.getDefault().register(this);
         bottomBar = (BottomBar) view.findViewById(R.id.bottomBar);

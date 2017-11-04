@@ -48,14 +48,26 @@
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/primary_text"
                                 android:textSize="20sp"/>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp">
                             <TextView
-                                android:layout_marginTop="10dp"
+
                                 android:id="@+id/job_detail_salary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/blue"
                                 android:textSize="20sp"
                                 android:layout_marginBottom="10dp"/>
+                                <TextView
+                                    android:text="元/时"
+                                    android:textColor="@color/blue"
+                                    android:textSize="20sp"
+                                    android:layout_marginBottom="10dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content">
@@ -116,6 +128,7 @@
                                     android:layout_marginEnd="5dp"/>
                                 <TextView
                                     android:textSize="15sp"
+                                    android:text="其他"
                                     android:id="@+id/job_detail_job_type"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -139,6 +152,7 @@
                                 <TextView
                                     android:textSize="15dp"
                                     android:id="@+id/job_detail_person_num"
+                                    android:text="2人"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/secondary_text"/>
@@ -158,6 +172,7 @@
                                     android:layout_marginRight="6dp"
                                     android:layout_marginEnd="6dp"/>
                                 <TextView
+                                    android:text="不限"
                                     android:textSize="15sp"
                                     android:id="@+id/job_detail_sex"
                                     android:layout_width="wrap_content"
@@ -179,12 +194,31 @@
                                 android:textSize="15sp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="工作日期:"
+                                android:text="工作开始日期:"
                                 android:textColor="@color/gray"
                                 android:layout_marginRight="5dp"
                                 android:layout_marginEnd="5dp"/>
                             <TextView
-                                android:id="@+id/job_detail_job_date"
+                                android:id="@+id/job_detail_start_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/secondary_text"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_marginTop="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp">
+                            <TextView
+                                android:textSize="15sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="工作结束日期:"
+                                android:textColor="@color/gray"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginEnd="5dp"/>
+                            <TextView
+                                android:id="@+id/job_detail_end_date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/secondary_text"/>
@@ -198,12 +232,30 @@
                                 android:textSize="15sp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="上班时间:"
+                                android:text="上班时段:"
                                 android:textColor="@color/gray"
                                 android:layout_marginEnd="5dp"
                                 android:layout_marginRight="5dp"/>
                             <TextView
                                 android:id="@+id/job_detail_work_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/secondary_text"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp">
+                            <TextView
+                                android:textSize="15sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="工作时长:"
+                                android:textColor="@color/gray"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginRight="5dp"/>
+                            <TextView
+                                android:id="@+id/work_hour"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/secondary_text"/>
@@ -248,8 +300,7 @@
                             android:layout_marginBottom="10dp"
                             >
                             <TextView
-
-                                android:text="已报名人数:"
+                                android:text="联系电话:"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/gray"
@@ -258,7 +309,7 @@
                                 android:layout_alignParentStart="true"/>
 
                             <TextView
-                                android:id="@+id/job_detail_had_people_num"
+                                android:id="@+id/job_detail_phone_num"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/blue"

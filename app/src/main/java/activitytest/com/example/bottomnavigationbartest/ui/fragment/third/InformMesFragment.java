@@ -119,7 +119,7 @@ public class InformMesFragment extends BaseFragment implements SwipeRefreshLayou
 
         List<Job> jobList = new ArrayList<>();
         String workName[] = new String[]{"托管班兼职","招聘兼职文字编辑"};
-        String workPay[] = new String[]{"40元/时","80元/天"};
+        int workPay[] = new int[]{40,60};
         String workPlace[] = new String[]{"金明>30KM","崂山区内"};
         String publishTime[] = new String[]{"2017-08-17","2017-08-19 "};
         String workType[] = new String[]{"家教 ", "其他"};

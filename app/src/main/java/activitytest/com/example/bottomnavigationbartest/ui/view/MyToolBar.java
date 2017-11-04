@@ -30,15 +30,19 @@ public class MyToolBar extends Toolbar {
     private ImageButton mRightButton;
     private ImageButton mLeftButton;
     private View mView;
-
+    private Context context;
+    private OnClickRefresh onClickrefresh;
     public MyToolBar (Context context){
         this(context,null);
+        this.context =context;
     }
     public MyToolBar(Context context,AttributeSet attrs){
         this(context,attrs,0);
+        this.context =context;
     }
     public MyToolBar(Context context, AttributeSet attrs,int defStyleAttr){
         super(context,attrs,defStyleAttr);
+        this.context =context;
         initView();
         setContentInsetsRelative(10,10);
         if(attrs != null){
@@ -59,6 +63,10 @@ public class MyToolBar extends Toolbar {
             a.recycle();
         }
     }
+    public interface OnClickRefresh{
+        public void onClick();
+    }
+
     private void initView(){
         if(mView == null ){
             //初始化
@@ -73,6 +81,13 @@ public class MyToolBar extends Toolbar {
             LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CLIP_HORIZONTAL);
             addView(mView,lp);
 
+            mRightButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickrefresh = (OnClickRefresh)context;
+                    onClickrefresh.onClick();
+                }
+            });
             mSearchView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {

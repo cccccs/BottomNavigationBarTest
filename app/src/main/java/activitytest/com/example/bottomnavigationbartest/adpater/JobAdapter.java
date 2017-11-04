@@ -85,9 +85,9 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
         Job job = mJobList.get(position);
         holder.workImage.setImageResource(job.getImageId());
         holder.workTime.setText(job.getWorkTime());
-        holder.workPay.setText(job.getWorkPay());
+        holder.workPay.setText(String.valueOf(job.getWorkPay()));
         holder.workPlace.setText(job.getWorkPlace());
-        holder.workName.setText(job.getWorkName());
+        holder.workName.setText(String.valueOf(job.getWorkName()));
         holder.publishTime.setText(job.getPublishTime());
     }
     @Override

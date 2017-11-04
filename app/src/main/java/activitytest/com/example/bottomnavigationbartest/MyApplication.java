@@ -15,7 +15,6 @@ public class MyApplication extends Application {
 
     //当前登录用户
     public User loginUser = new User();
-
     public User getLoginUser(){
         return loginUser;
     }
@@ -24,13 +23,17 @@ public class MyApplication extends Application {
         loginUser = new Student();
         loginUser.setName(stu.getName());
         loginUser.setUserPassWord(stu.getUserPassWord());
+        loginUser.setSession(stu.getSession());
         loginUser.setLogin(true);
+        loginUser.setUserId(stu.getUserId());
     }
     public void EmpLogin(User employer){
         loginUser = new Employer();
         loginUser.setName(employer.getName());
         loginUser.setUserPassWord(employer.getUserPassWord());
+        loginUser.setSession(employer.getSession());
         loginUser.setLogin(true);
+        loginUser.setUserId(employer.getUserId());
     }
 
 

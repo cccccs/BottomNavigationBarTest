@@ -11,7 +11,7 @@ import static activitytest.com.example.bottomnavigationbartest.db.Job.JobState.d
 //主页兼职选项
 public class Job implements Parcelable {
     private String workName;
-    private String workPay;
+    private int workPay;
     private String workPlace;
     private String publishTime;
     private String workType;
@@ -22,6 +22,12 @@ public class Job implements Parcelable {
     private String workContent;
     private String havePeopleNum;
     private JobState jobState;
+    private String startTime;
+    private String endTime;
+    private String phoneNum;
+    private int employerId;
+    private int workHour;
+
     private int imageId;
     private int jobId;
     public enum JobState{//兼职发布状态 审核中，真正报名 ，截止报名
@@ -32,8 +38,13 @@ public class Job implements Parcelable {
     }
 
     protected Job(Parcel in){
+        startTime = in.readString();
+        endTime =in.readString();
+        phoneNum = in.readString();
+        employerId = in.readInt();
+        workHour =in.readInt();
         workName = in.readString();
-        workPay = in.readString();
+        workPay = in.readInt();
         workPlace = in.readString();
         publishTime = in.readString();
         workType = in.readString();
@@ -48,6 +59,16 @@ public class Job implements Parcelable {
         jobState = doing;
 
     }
+    public void setStartTime(String startTime){this.startTime =startTime;}
+    public void setEndTime(String endTime){this.endTime =endTime;}
+    public void setPhoneNum(String phoneNum){this.phoneNum =phoneNum;}
+    public void setEmployerId(int employerId){this.employerId = employerId;}
+    public void setWorkHour(int workHour){this.workHour =workHour;}
+    public String getStartTime(){return startTime;}
+    public String getEndTime(){return endTime;}
+    public String getPhoneNum(){return phoneNum;}
+    public int getEmployerId(){return employerId;}
+    public int getWorkHour(){return workHour;}
     public void setWorkType(String workType){this.workType = workType;}
     public void setPeopleNum(String peopleNum){this.PeopleNum = peopleNum;}
     public void setJobSex(String jobSex){this.jobSex = jobSex;}
@@ -84,11 +105,11 @@ public class Job implements Parcelable {
         return workPlace;
     }
 
-    public void setWorkPay(String workPay){
+    public void setWorkPay(int workPay){
         this.workPay = workPay;
     }
 
-    public String getWorkPay(){
+    public int  getWorkPay(){
         return workPay;
     }
 
@@ -127,7 +148,7 @@ public class Job implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(workName);
-        dest.writeString(workPay);
+        dest.writeInt(workPay);
         dest.writeString(workPlace);
         dest.writeString(publishTime);
         dest.writeString(workType);
@@ -139,6 +160,11 @@ public class Job implements Parcelable {
         dest.writeString(havePeopleNum);
         dest.writeInt(imageId);
         dest.writeInt(jobId);
+        dest.writeString(startTime);
+        dest.writeString(endTime);
+        dest.writeString(phoneNum);
+        dest.writeInt(workHour);
+        dest.writeInt(employerId);
     }
 
     @Override

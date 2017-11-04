@@ -288,7 +288,10 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
         item4.setChoice("我的申请");
         item4.setImageId(R.drawable.ic_near_me_black_24dp);
         choiceList.add(item4);
-
+        Choice item5 = new Choice();
+        item5.setChoice("意见反馈");
+        item5.setImageId(R.drawable.ic_near_me_black_24dp);
+        choiceList.add(item5);
         return choiceList;
     }
 
@@ -306,6 +309,10 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
         item5.setChoice("我的发布");
         item5.setImageId(R.drawable.ic_flag_black_24dp);
         choiceList.add(item5);
+        Choice item6 = new Choice();
+        item6.setChoice("意见反馈");
+        item6.setImageId(R.drawable.ic_near_me_black_24dp);
+        choiceList.add(item6);
         return choiceList;
     }
 
@@ -355,6 +362,7 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
         ImgMys.setImageResource(R.mipmap.ic_launcher);
         logOut.setVisibility(View.VISIBLE);
         Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
+        mApplication=(MyApplication)getActivity().getApplication();
         loginUser = mApplication.getLoginUser();
         if(loginUser instanceof Employer){
             choiceList = initEmpChoice();
@@ -366,6 +374,7 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
             adapter.setDatas(choiceList);
             adapter.notifyDataSetChanged();
         }
+        Log.d("FoursTabFragment","SessionTest:"+loginUser.getSession());
     }
 
 }

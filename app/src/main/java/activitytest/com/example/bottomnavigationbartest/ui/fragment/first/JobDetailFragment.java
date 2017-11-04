@@ -27,13 +27,14 @@ public class JobDetailFragment extends BaseBackFragment {
     TextView mJobDetailSalre;
     TextView mJobDetailLoc;
     TextView mJobDetailDate;
-    TextView mJobType;
-    TextView mJobPeopleNum;
-    TextView mJobSex;
-    TextView mWorkDate;
+    TextView mJobStartTime;
+    TextView mJobEndTime;
+    TextView mJobWorkTime;
+    TextView mWorkHour;
     TextView mWorkTime;
     TextView mWorkContent;
-    TextView mJobHadPeopleNum;
+    TextView mJobPhone;
+    TextView mJobWorkHour;
     LinearLayout mCollectLinear;
     LinearLayout mSignUpLinear;
 
@@ -72,27 +73,28 @@ public class JobDetailFragment extends BaseBackFragment {
         mJobDetailSalre = (TextView)view.findViewById(R.id.job_detail_salary);
         mJobDetailLoc = (TextView) view.findViewById(R.id.job_detail_place);
         mJobDetailDate = (TextView) view.findViewById(R.id.job_detail_publish_time);
-        mJobType = (TextView) view.findViewById(R.id.job_detail_job_type);
-        mJobPeopleNum = (TextView) view.findViewById(R.id.job_detail_person_num);
-        mJobSex = (TextView) view.findViewById(R.id.job_detail_sex);
-        mWorkDate = (TextView) view.findViewById(R.id.job_detail_job_date);
+//        mJobType = (TextView) view.findViewById(R.id.job_detail_job_type);
+//        mJobPeopleNum = (TextView) view.findViewById(R.id.job_detail_person_num);
+//        mJobSex = (TextView) view.findViewById(R.id.job_detail_sex);
+
         mWorkTime =(TextView)view.findViewById(R.id.job_detail_work_time);
         mWorkContent = (TextView) view.findViewById(R.id.job_detail_job_content);
-        mJobHadPeopleNum = (TextView)view.findViewById(R.id.job_detail_had_people_num);
+
+//        mJobHadPeopleNum = (TextView)view.findViewById(R.id.job_detail_had_people_num);
         mCollectLinear = (LinearLayout)view.findViewById(R.id.job_detail_collect);
         mSignUpLinear = (LinearLayout) view.findViewById(R.id.signUp);
 
         mJobDetailName.setText(mJob.getWorkName());
-        mJobDetailSalre.setText(mJob.getWorkPay());
+        mJobDetailSalre.setText(mJob.getWorkPay() + "");
         mJobDetailLoc.setText(mJob.getWorkPlace());
         mJobDetailDate.setText(mJob.getPublishTime());
-        mJobType.setText(mJob.getWorkType());
-        mJobPeopleNum.setText(mJob.getPeopleNum());
-        mJobSex.setText(mJob.getJobSex());
-        mWorkDate.setText(mJob.getWorkData());
+  //      mJobType.setText(mJob.getWorkType());
+    //    mJobPeopleNum.setText(mJob.getPeopleNum());
+      //  mJobSex.setText(mJob.getJobSex());
+
         mWorkTime.setText(mJob.getWorkTime());
         mWorkContent.setText(mJob.getWorkContent());
-        mJobHadPeopleNum.setText(mJob.getHavePeopleNum());
+        //mJobHadPeopleNum.setText(mJob.getHavePeopleNum());
 
         toolbar.setTitle("兼职详情");
        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);

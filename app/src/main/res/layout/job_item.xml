@@ -68,7 +68,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="真聘"
                 android:textSize="12sp"/>
         </LinearLayout>
         <RelativeLayout
@@ -122,6 +121,14 @@
                 android:layout_height="wrap_content"
                 android:textColor="#ef5350"
                 android:textSize="15sp"/>
+                <TextView
+                    android:layout_gravity="top"
+                    android:gravity="top"
+                    android:text="元/时"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ef5350"
+                    android:textSize="15sp"/>
             </LinearLayout>
         </RelativeLayout>
 

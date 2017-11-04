@@ -17,6 +17,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
 
 import activitytest.com.example.bottomnavigationbartest.MyApplication;
 import activitytest.com.example.bottomnavigationbartest.R;
@@ -25,8 +30,16 @@ import activitytest.com.example.bottomnavigationbartest.db.Employer;
 import activitytest.com.example.bottomnavigationbartest.db.User;
 import activitytest.com.example.bottomnavigationbartest.event.LoginCancelEvent;
 import activitytest.com.example.bottomnavigationbartest.ui.fragment.MainFragment;
+import activitytest.com.example.bottomnavigationbartest.util.HttpUtil;
+import activitytest.com.example.bottomnavigationbartest.util.Utility;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static activitytest.com.example.bottomnavigationbartest.db.User.UserType.student;
+import static activitytest.com.example.bottomnavigationbartest.ui.fragment.fours.RegisterFragment.JSON;
 
 /**
  * Created by YoKeyword on 16/2/14.
@@ -139,8 +152,8 @@ public class LoginFragment extends BaseBackFragment {
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String strAccount = mEtAccount.getText().toString();
-                String strPassword = mEtPassword.getText().toString();
+                final String strAccount = mEtAccount.getText().toString();
+                final String strPassword = mEtPassword.getText().toString();
                 if (TextUtils.isEmpty(strAccount.trim())) {
                     Toast.makeText(_mActivity, "用户名不能为空!", Toast.LENGTH_SHORT).show();
                     return;
@@ -149,47 +162,8 @@ public class LoginFragment extends BaseBackFragment {
                     Toast.makeText(_mActivity, "密码不能为空!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+               login(strAccount,strPassword);
 
-                //和数据库对比是否存在此账户
-
-                if(signCorrect){
-                    SharedPreferences.Editor editor  =  getActivity().getSharedPreferences("data",Context.MODE_PRIVATE).edit();
-                    editor.putString("account",strAccount);
-                    editor.putString("password",strPassword);
-                    editor.putString("userType",(empCheckBox.isChecked()?User.UserType.business: student).toString());
-                    editor.apply();
-                }
-
-
-                if(empCheckBox.isChecked()) {
-                    loginUser.setName(strAccount);
-                    loginUser.setLogin(true);
-                    loginUser.setUserPassWord(strPassword);
-                    mApplication.EmpLogin(loginUser);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString(MainFragment.KEY_RESULT_TYPE,"business");
-                    setFragmentResult(RESULT_OK, bundle);
-                }else {
-                    loginUser.setName(strAccount);
-                    loginUser.setLogin(true);
-                    loginUser.setUserPassWord(strPassword);
-                    mApplication.StuLogin(loginUser);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString(MainFragment.KEY_RESULT_TYPE,"student");
-                    setFragmentResult(RESULT_OK, bundle);
-                }
-
-
-                Log.d("MainActivity","loginUser.getlogin()"+loginUser.getlogin());
-                Log.d("MainFragment","loginUser instanceof Employer "+String.valueOf(loginUser instanceof Employer));
-
-                // 登录成功 eventbus上传发布事件
-              //  EventBus.getDefault().post(new LoginSuccessEvent(strAccount));
-                hideSoftInput();
-              mOnLoginSuccessListener.onLoginSuccess(strAccount);
-                pop();
             }
         });
 
@@ -199,6 +173,134 @@ public class LoginFragment extends BaseBackFragment {
                 start(RegisterFragment.newInstance());
             }
         });
+    }
+    public void  login(final String strAccount,final  String strPassword){
+        String address;
+        //和数据库对比是否存在此账户
+        if(!empCheckBox.isChecked()) {
+            address  = "http://119.29.3.128:8080/JobHunter/JobSeeker/login";
+        }else{
+            address = "http://119.29.3.128:8080/JobHunter/Employer/login";
+        }
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("username", strAccount);
+            json.put("password",strPassword);
+        }catch (JSONException e){
+            Toast.makeText(_mActivity, e+ "", Toast.LENGTH_SHORT).show();
+        }
+
+
+        RequestBody requestBody = RequestBody.create(JSON,json.toString());
+
+        HttpUtil.postOkHttpRequest(address,requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("LoginFragment",e.toString());
+                _mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(_mActivity,"登录失败", Toast.LENGTH_SHORT).show();
+
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //获取session的操作，session放在cookie头，且取出后含有“；”，取出后为下面的 s （也就是jsesseionid）
+                Headers headers = response.headers();
+                Log.d("info_headers", "header " + headers);
+                List<String> cookies = headers.values("Set-Cookie");
+                String session = cookies.get(0);
+                Log.d("info_cookies", "onResponse-size: " + cookies);
+                String sessionStr;
+                sessionStr = session.substring(0, session.indexOf(";"));
+                Log.i("info_s", "session is  :" + sessionStr);
+
+                int userId;
+                try {
+                    JSONObject object = new JSONObject(response.body().toString());
+                    userId = object.getInt("userId");
+                    loginUser.setUserId(userId);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                loginUser.setSession(sessionStr);
+                Log.i("info_s", "Session test" + sessionStr);
+
+                if(!Utility.handleStatusResponse(response.body().string())){
+                    _mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(_mActivity, "用户名或密码名错误!", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }else{
+                    _mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            correctPassword(strAccount,strPassword);
+                        }
+                    });
+
+                }
+
+
+
+            }
+        });
+
+
+
+    }
+
+    private void correctPassword(String strAccount,String strPassword) {
+        SharedPreferences.Editor editor  =  getActivity().getSharedPreferences("data",Context.MODE_PRIVATE).edit();
+        editor.putString("account",strAccount);
+        editor.putString("password",strPassword);
+        editor.putString("userType",(empCheckBox.isChecked()?User.UserType.business: student).toString());
+        editor.apply();
+
+
+
+        if(empCheckBox.isChecked()) {
+            loginUser.setName(strAccount);
+            loginUser.setLogin(true);
+            loginUser.setUserPassWord(strPassword);
+            mApplication.EmpLogin(loginUser);
+
+            Bundle bundle = new Bundle();
+            bundle.putString(MainFragment.KEY_RESULT_TYPE,"business");
+            setFragmentResult(RESULT_OK, bundle);
+        }else {
+            loginUser.setName(strAccount);
+            loginUser.setLogin(true);
+            loginUser.setUserPassWord(strPassword);
+            mApplication.StuLogin(loginUser);
+
+
+            Bundle bundle = new Bundle();
+            bundle.putString(MainFragment.KEY_RESULT_TYPE,"student");
+            setFragmentResult(RESULT_OK, bundle);
+        }
+
+        Log.i("info_s", "SessionTest" + loginUser.getSession());
+        Log.d("MainActivity","loginUser.getlogin()"+loginUser.getlogin());
+        Log.d("MainFragment","loginUser instanceof Employer "+String.valueOf(loginUser instanceof Employer));
+
+        // 登录成功 eventbus上传发布事件
+        //  EventBus.getDefault().post(new LoginSuccessEvent(strAccount));
+        hideSoftInput();
+
+
+
+        mOnLoginSuccessListener.onLoginSuccess(strAccount);
+        pop();
+
     }
 
     @Override

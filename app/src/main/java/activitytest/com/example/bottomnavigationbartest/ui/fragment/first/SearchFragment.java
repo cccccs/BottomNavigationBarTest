@@ -19,15 +19,29 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import activitytest.com.example.bottomnavigationbartest.MyApplication;
 import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.adpater.JobAdapter;
 import activitytest.com.example.bottomnavigationbartest.base.BaseBackFragment;
 import activitytest.com.example.bottomnavigationbartest.db.Job;
+import activitytest.com.example.bottomnavigationbartest.db.User;
 import activitytest.com.example.bottomnavigationbartest.ui.view.CommonFilterPop;
+import activitytest.com.example.bottomnavigationbartest.util.HttpUtil;
+import activitytest.com.example.bottomnavigationbartest.util.Utility;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static activitytest.com.example.bottomnavigationbartest.ui.fragment.fours.RegisterFragment.JSON;
 
 /**
  * Created by pc on 2017/8/22.
@@ -65,6 +79,9 @@ public class SearchFragment extends BaseBackFragment implements SwipeRefreshLayo
 
     JobAdapter mAdapter;
 
+    User loginUser;
+    MyApplication myApplication;
+
     public static SearchFragment newInstance(){
         Bundle args = new Bundle();
         SearchFragment fragment = new SearchFragment();
@@ -84,6 +101,8 @@ public class SearchFragment extends BaseBackFragment implements SwipeRefreshLayo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_search,container,false);
 
+        myApplication = (MyApplication)getActivity().getApplication();
+        loginUser =myApplication.getLoginUser();
         getType = (String)getArguments().getString(ARG_TYPE);
         initView(view);
         return view;
@@ -142,6 +161,7 @@ public class SearchFragment extends BaseBackFragment implements SwipeRefreshLayo
                     hideSoftInput();
                     mRefreshLayout.setRefreshing(true);
                     onRefresh();//搜索刷新
+
                     Log.d("SearchFragment","actionID "+event.getAction());
                     return true;
                 }
@@ -251,12 +271,13 @@ public class SearchFragment extends BaseBackFragment implements SwipeRefreshLayo
         mRefreshLayout.postDelayed(new Runnable() {
             @Override
             public void run() {
-                jobList = initJobs();
-                mAdapter.setDatas(jobList);
+
+                getSearchJob();
                 mRefreshLayout.setRefreshing(false);
 
             }
         }, 2500);
+
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -277,13 +298,61 @@ public class SearchFragment extends BaseBackFragment implements SwipeRefreshLayo
 //        }).start();
     }
 
+    //网络请求数据
+    public void getSearchJob(){
+        String address="http://119.29.3.128:8080/JobHunter/search";
+
+        JSONObject json = new JSONObject();
+        try {
+           json.put("keyword",searchEdit.getText());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        RequestBody requestBody = RequestBody.create(JSON,json.toString());
+
+        HttpUtil.postOkHttpRequest(address, requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                _mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(_mActivity, "获取失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                Log.d("SearchFragment","JobList:"+response.body().toString());
+                jobList =Utility.handleJobResponse(response.body().string());
+                if(jobList!=null) {
+                    mAdapter.setDatas(jobList);
+                    _mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(_mActivity, "获取成功", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else{
+                    _mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(_mActivity, "无相关兼职", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            }
+        });
+    }
 
     //网络刷新数据
     private List<Job> initJobs(){
         //Switch（getSearchText);
         List<Job> jobList = new ArrayList<>();
         String workName[] = new String[]{"托管班兼职","招聘App推广"};
-        String workPay[] = new String[]{"40元/时","80元/天"};
+        int workPay[] = new int[]{40,60};
         String workPlace[] = new String[]{"金明>30KM","崂山区内"};
         String publishTime[] = new String[]{"2017-08-17","2017-08-19 "};
         String workType[] = new String[]{"家教 ", "其他"};

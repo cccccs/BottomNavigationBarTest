@@ -19,7 +19,7 @@ public class User {
     private String Name;
     private String phone;
     private boolean login=false;
-
+    private String sessionStr;
     public User(){
         UserId = 0;
         UserPassWord = "";
@@ -47,6 +47,12 @@ public class User {
         Name = name;
     }
 
+    public void setSession(String str){
+        sessionStr = str;
+    }
+    public String getSession(){
+        return sessionStr;
+    }
     public void setUserType(UserType userType) {
         this.userType = userType;
     }
