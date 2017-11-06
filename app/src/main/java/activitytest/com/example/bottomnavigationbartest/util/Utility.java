@@ -37,10 +37,15 @@ public class Utility {
     //处理Job数据
     public static List<Job> handleJobResponse(String response){
         Log.d("FirstFragment","JobList:"+response);
+
+        Log.d("FirstFragment","isEmpty"+TextUtils.isEmpty(response));
         if(!TextUtils.isEmpty(response)){
+
             try{
+                JSONObject jsonObject = new JSONObject(response);
                 List<Job> jobList = new ArrayList<>();
-                JSONArray allJobs = new JSONArray(response);
+                JSONArray allJobs = jsonObject.getJSONArray("joblist");
+                Log.d("FirstFragment","jobLength"+allJobs.length());
                 for(int i = 0;i<allJobs.length();i++) {
                     JSONObject jobObject = allJobs.getJSONObject(i);
 
@@ -57,7 +62,7 @@ public class Utility {
                     job.setWorkHour(jobObject.getInt("workHour"));
                     job.setStartTime(jobObject.getString("startTime"));
                     job.setEndTime(jobObject.getString("endTime"));
-
+                    Log.d("FirstFragment","job"+response);
                     jobList.add(job);
                 }
                 return jobList;

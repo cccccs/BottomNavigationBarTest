@@ -356,7 +356,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:id="@+id/signUp"
+                android:id="@+id/job_detail_collect"
                 android:background="@drawable/sign">
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -381,7 +381,7 @@
                 android:background="#fafafa"
                 />
             <LinearLayout
-                android:id="@+id/job_detail_collect"
+                android:id="@+id/signUp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

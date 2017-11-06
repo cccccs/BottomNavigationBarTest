@@ -1,6 +1,7 @@
 package activitytest.com.example.bottomnavigationbartest.ui.fragment.first;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,6 +54,8 @@ public class FirstTabFragment extends BaseMainFragment implements BGABanner.Dele
     private  List<Job> jobList =new ArrayList<>();
     private List<TypeOfJob> typeList = new ArrayList<>();
 
+    private Handler handler=null;
+    private String content=null;
 
     RecyclerView jobRecyclerView;
     RecyclerView typeRecyclerView;
@@ -181,21 +184,23 @@ public class FirstTabFragment extends BaseMainFragment implements BGABanner.Dele
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                final String responseText = response.body().toString();
+                final String responseText = response.body().string();
                 final List<Job> jobList = Utility.handleJobResponse(responseText);
                 if(jobList != null){
-                    showJobListInfo(jobList);
-                    getActivity().runOnUiThread(new Runnable() {
+
+                    _mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            showJobListInfo(jobList);
                             Toast.makeText(_mActivity,"刷新成功", Toast.LENGTH_LONG).show();
                         }
                     });
                 }else{
-                    showJobListInfo(jobList);
-                    getActivity().runOnUiThread(new Runnable() {
+
+                    _mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            showJobListInfo(jobList);
                             Toast.makeText(_mActivity,"无信息", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -207,13 +212,41 @@ public class FirstTabFragment extends BaseMainFragment implements BGABanner.Dele
 
     private void showJobListInfo(List<Job> jobList){
         JobAdapter jobAdapter = new JobAdapter(_mActivity);
-        jobRecyclerView.setAdapter(jobAdapter);
-        if(jobList!=null) {
-            jobAdapter.setDatas(jobList);
-        }else{
-            jobList = initJobs();
-            jobAdapter.setDatas(jobList);
-        }
+                jobRecyclerView.setAdapter(jobAdapter);
+                if(jobList!=null) {
+                    jobAdapter.setDatas(jobList);
+                }else{
+                    jobList = initJobs();
+                    jobAdapter.setDatas(jobList);
+                }
+
+
+
+//      //  handler=new Handler();
+//        //final Runnable   runnableUi=new  Runnable(){
+//            @Override
+//            public void run() {
+//                //更新界面
+//                JobAdapter jobAdapter = new JobAdapter(_mActivity);
+//                jobRecyclerView.setAdapter(jobAdapter);
+//                if(jobList!=null) {
+//                    jobAdapter.setDatas(jobList);
+//                }else{
+//                    jobList = initJobs();
+//                    jobAdapter.setDatas(jobList);
+//                }
+//            }
+//
+//        };
+//        new Thread(){
+//            public void run(){
+//
+//                handler.post(runnableUi);
+//            }
+//        }.start();
+
+
+
 
     }
 

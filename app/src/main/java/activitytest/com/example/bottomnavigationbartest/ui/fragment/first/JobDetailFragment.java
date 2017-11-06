@@ -9,10 +9,25 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import activitytest.com.example.bottomnavigationbartest.MyApplication;
 import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseBackFragment;
 import activitytest.com.example.bottomnavigationbartest.db.Job;
+import activitytest.com.example.bottomnavigationbartest.db.User;
+import activitytest.com.example.bottomnavigationbartest.util.HttpUtil;
+import activitytest.com.example.bottomnavigationbartest.util.Utility;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static activitytest.com.example.bottomnavigationbartest.ui.fragment.fours.RegisterFragment.JSON;
 
 /**
  * Created by pc on 2017/5/8.
@@ -22,6 +37,9 @@ public class JobDetailFragment extends BaseBackFragment {
     private static final String ARG_JOB = "arg_job";
 
     private Job mJob;
+
+    private User loginUser;
+    private MyApplication myApplication;
 
     TextView mJobDetailName;
     TextView mJobDetailSalre;
@@ -63,6 +81,8 @@ public class JobDetailFragment extends BaseBackFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.first_job_detail,container, false);
 
+        myApplication = (MyApplication)_mActivity.getApplication();
+        loginUser = myApplication.getLoginUser();
         initView(view);
         return view;
     }
@@ -102,6 +122,56 @@ public class JobDetailFragment extends BaseBackFragment {
            @Override
            public void onClick(View v) {
                _mActivity.onBackPressed();
+            }
+        });
+        mSignUpLinear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleSignUp();
+            }
+        });
+
+    }
+    public void handleSignUp(){
+        String address = "http://119.29.3.128:8080/JobHunter/JobSeeker/takeJob";
+
+        JSONObject jsonObject = new JSONObject();
+        try{
+            jsonObject.put("jobId",mJob.getJobId());
+            jsonObject.put("employerId",mJob.getEmployerId());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        RequestBody requestBody = RequestBody.create(JSON,jsonObject.toString());
+        HttpUtil.postOkHttpRequestWithSession(address,loginUser.getSession(), requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                _mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(_mActivity,"报名失败 failure",Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(Utility.handleStatusResponse(response.body().string())) {
+                    _mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(_mActivity,"报名成功",Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }else{
+                    _mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(_mActivity,"报名失败 false",Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
 

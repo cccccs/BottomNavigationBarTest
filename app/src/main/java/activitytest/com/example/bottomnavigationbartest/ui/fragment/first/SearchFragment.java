@@ -324,13 +324,16 @@ public class SearchFragment extends BaseBackFragment implements SwipeRefreshLayo
             @Override
             public void onResponse(Call call, Response response) throws IOException {
 
-                Log.d("SearchFragment","JobList:"+response.body().toString());
+
                 jobList =Utility.handleJobResponse(response.body().string());
                 if(jobList!=null) {
-                    mAdapter.setDatas(jobList);
+
                     _mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            JobAdapter jobAdapter = new JobAdapter(_mActivity);
+                            mRecy.setAdapter(jobAdapter);
+                            jobAdapter.setDatas(jobList);
                             Toast.makeText(_mActivity, "获取成功", Toast.LENGTH_SHORT).show();
                         }
                     });
