@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_text"
-            android:text="恭喜您被此兼职录取，请及时与商家联系!"
+            android:text="恭喜您报名成功，请及时与商家联系!"
             android:layout_marginBottom="10dp"/>
             <LinearLayout
                 android:layout_width="match_parent"

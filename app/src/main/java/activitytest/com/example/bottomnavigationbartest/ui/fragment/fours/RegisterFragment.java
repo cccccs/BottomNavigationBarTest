@@ -23,6 +23,7 @@ import java.io.IOException;
 import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseBackFragment;
 import activitytest.com.example.bottomnavigationbartest.util.HttpUtil;
+import activitytest.com.example.bottomnavigationbartest.util.Utility;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -159,25 +160,25 @@ public class RegisterFragment extends BaseBackFragment {
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
-                        Log.d("LoginFragment","MMMMMMMMM"+response.body().string());
+                      String responseText =response.body().string();
 
-//                        if(!Utility.handleStatusResponse(response.body().string())){
-//                            _mActivity.runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    Toast.makeText(_mActivity, "注册成功，请登录！", Toast.LENGTH_SHORT).show();
-//
-//                                }
-//                            });
-//                        }else{
-//                            _mActivity.runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    Toast.makeText(_mActivity, "注册失败！", Toast.LENGTH_SHORT).show();
-//                                }
-//                            });
-//
-//                        }
+                        if(Utility.handleStatusResponse(responseText)){
+                            _mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(_mActivity, "注册成功，请登录！", Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                        }else{
+                            _mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(_mActivity, "注册失败！", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
 
 
                     }

@@ -75,7 +75,12 @@ public class AllMyselfFragment extends BaseBackFragment {
         correctImg = (ImageView) view.findViewById(R.id.correct);
         userPhone = (EditText) view.findViewById(R.id.phone);
 
-
+        userName.setText(loginUser.getUserName());
+        userPhone.setText(loginUser.getPhone());
+        if(loginUser.getSex()== User.Sex.woman){
+            checkBox2.setChecked(true);
+            checkBox1.setChecked(false);
+        }
         initToolbarNav(toolbar);
 
         if(loginUser instanceof Employer)
@@ -146,6 +151,10 @@ public class AllMyselfFragment extends BaseBackFragment {
                         @Override
                         public void run() {
                             Toast.makeText(_mActivity, "发送成功！", Toast.LENGTH_SHORT).show();
+                            loginUser.setUserName(userName.getText().toString());
+                            loginUser.setPhone(userPhone.getText().toString());
+                            loginUser.setSex(checkBox1.isChecked()? User.Sex.man: User.Sex.woman);
+                            hideSoftInput();
                             _mActivity.onBackPressed();
 
                         }

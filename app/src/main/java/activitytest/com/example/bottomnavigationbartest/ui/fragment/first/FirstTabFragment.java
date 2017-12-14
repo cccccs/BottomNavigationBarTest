@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -29,6 +30,9 @@ import activitytest.com.example.bottomnavigationbartest.adpater.TypeAdapter;
 import activitytest.com.example.bottomnavigationbartest.base.BaseMainFragment;
 import activitytest.com.example.bottomnavigationbartest.db.Job;
 import activitytest.com.example.bottomnavigationbartest.db.TypeOfJob;
+import activitytest.com.example.bottomnavigationbartest.event.LoginCancelEvent;
+import activitytest.com.example.bottomnavigationbartest.event.LoginSuccessEvent;
+import activitytest.com.example.bottomnavigationbartest.event.SignSuccessEvent;
 import activitytest.com.example.bottomnavigationbartest.event.StartBrotherEvent;
 import activitytest.com.example.bottomnavigationbartest.listener.OnItemClickListener;
 import activitytest.com.example.bottomnavigationbartest.ui.view.MyItemDecoration;
@@ -74,6 +78,7 @@ public class FirstTabFragment extends BaseMainFragment implements BGABanner.Dele
 
         View view = inflater.inflate(R.layout.fragment_tab_first, container, false);
     //    sendRequestWithHttpURLConnection();
+        EventBus.getDefault().register(this);
         initJobs();
         initTypes();
         initView(view);
@@ -186,6 +191,7 @@ public class FirstTabFragment extends BaseMainFragment implements BGABanner.Dele
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
                 final List<Job> jobList = Utility.handleJobResponse(responseText);
+                Log.d("工作请求","主页FIRST");
                 if(jobList != null){
 
                     _mActivity.runOnUiThread(new Runnable() {
@@ -215,9 +221,11 @@ public class FirstTabFragment extends BaseMainFragment implements BGABanner.Dele
                 jobRecyclerView.setAdapter(jobAdapter);
                 if(jobList!=null) {
                     jobAdapter.setDatas(jobList);
+                    jobAdapter.notifyDataSetChanged();
                 }else{
                     jobList = initJobs();
                     jobAdapter.setDatas(jobList);
+                    jobAdapter.notifyDataSetChanged();
                 }
 
 
@@ -375,12 +383,36 @@ public class FirstTabFragment extends BaseMainFragment implements BGABanner.Dele
                 .centerCrop()
                 .into(itemView);
     }
+    public void getJobList(int jobId){
+        try {
+            for (int i = 0; i < jobList.size(); i++) {
+                if(jobList.get(i).getJobId()==jobId){
+                    jobList.remove(i);
+                }
+            }
+        }catch (Exception e){
+          e.printStackTrace();
+        }
+
+
+    }
 
     @Override
     public void onBannerItemClick(BGABanner banner, ImageView itemView, String model, int position) {
         Toast.makeText(banner.getContext(), "点击了第" + (position + 1) + "页", Toast.LENGTH_SHORT).show();
     }
-
+    @Subscribe
+    public void SignSuccess(SignSuccessEvent event){
+        requestJob();
+    }
+    @Subscribe
+    public void LoginSuccess(LoginSuccessEvent event){
+        requestJob();
+    }
+    @Subscribe
+    public void LoginCancal(LoginCancelEvent event){
+        requestJob();
+    }
     private void initTypes(){
         typeList.clear();
         TypeOfJob item1 = new TypeOfJob();
@@ -415,6 +447,11 @@ public class FirstTabFragment extends BaseMainFragment implements BGABanner.Dele
         super.onDetach();
 
     }
+    @Override
+    public void onDestroyView(){
+        super.onDestroyView();
 
+        EventBus.getDefault().unregister(this);
+    }
 
 }

@@ -27,8 +27,10 @@ import activitytest.com.example.bottomnavigationbartest.MyApplication;
 import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseBackFragment;
 import activitytest.com.example.bottomnavigationbartest.db.Employer;
+import activitytest.com.example.bottomnavigationbartest.db.Job;
 import activitytest.com.example.bottomnavigationbartest.db.User;
 import activitytest.com.example.bottomnavigationbartest.event.LoginCancelEvent;
+import activitytest.com.example.bottomnavigationbartest.event.LoginSuccessEvent;
 import activitytest.com.example.bottomnavigationbartest.ui.fragment.MainFragment;
 import activitytest.com.example.bottomnavigationbartest.util.HttpUtil;
 import activitytest.com.example.bottomnavigationbartest.util.Utility;
@@ -220,18 +222,43 @@ public class LoginFragment extends BaseBackFragment {
                 sessionStr = session.substring(0, session.indexOf(";"));
                 Log.i("info_s", "session is  :" + sessionStr);
 
-                int userId;
-                try {
-                    JSONObject object = new JSONObject(response.body().toString());
-                    userId = object.getInt("userId");
-                    loginUser.setUserId(userId);
-                }catch (Exception e){
-                    e.printStackTrace();
+                String responseText = response.body().string();
+                Log.d("工作完成","Main"+responseText);
+                final List<Job> jobList = Utility.handlejobResponse(responseText);
+
+                Log.d("工作完成","MAIN"+jobList);
+                if(jobList!=null) {
+
+                    loginUser.setJobList(jobList);
+
                 }
+
+                    int userId;
+                    String phoneNum;
+                    int genderId;
+
+                        userId = Utility.handleIntResponse(responseText,"userId") ;
+
+                    phoneNum = Utility.handleStringResponse(responseText,"phoneNumber");
+
+                        genderId = Utility.handleIntResponse(responseText,"gender") ;
+
+
+
+                    if(genderId!=0) {
+                        loginUser.setSex(User.Sex.man);
+                    }else{
+                        loginUser.setSex(User.Sex.woman);
+                    }
+                Log.i("info_logUser", "" + phoneNum);
+                    loginUser.setPhone(phoneNum);
+                    loginUser.setUserId(userId);
+
                 loginUser.setSession(sessionStr);
                 Log.i("info_s", "Session test" + sessionStr);
-
-                if(!Utility.handleStatusResponse(response.body().string())){
+                loginUser.setUserName(strAccount);
+                Log.i("info_logUser", "" + loginUser.getPhone());
+                if(!Utility.handleStatusResponse(responseText)){
                     _mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -259,7 +286,7 @@ public class LoginFragment extends BaseBackFragment {
     }
 
     private void correctPassword(String strAccount,String strPassword) {
-        SharedPreferences.Editor editor  =  getActivity().getSharedPreferences("data",Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor  =  _mActivity.getSharedPreferences("data",Context.MODE_PRIVATE).edit();
         editor.putString("account",strAccount);
         editor.putString("password",strPassword);
         editor.putString("userType",(empCheckBox.isChecked()?User.UserType.business: student).toString());
@@ -293,7 +320,7 @@ public class LoginFragment extends BaseBackFragment {
         Log.d("MainFragment","loginUser instanceof Employer "+String.valueOf(loginUser instanceof Employer));
 
         // 登录成功 eventbus上传发布事件
-        //  EventBus.getDefault().post(new LoginSuccessEvent(strAccount));
+         EventBus.getDefault().post(new LoginSuccessEvent(strAccount));
         hideSoftInput();
 
 
@@ -328,6 +355,7 @@ public class LoginFragment extends BaseBackFragment {
             @Override
             public void onClick(View v) {
                 _mActivity.onBackPressed();
+
                 EventBus.getDefault().post(new LoginCancelEvent());
                 hideSoftInput();
             }

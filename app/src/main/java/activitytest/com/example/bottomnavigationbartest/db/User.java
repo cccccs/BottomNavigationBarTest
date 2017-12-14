@@ -1,5 +1,7 @@
 package activitytest.com.example.bottomnavigationbartest.db;
 
+import java.util.List;
+
 /**
  * Created by pc on 2017/5/25.
  */
@@ -11,6 +13,9 @@ public class User {
     public enum Sex{
         man,woman
     }
+    private List<MsgL> msgLList;
+    private List<Job> jobList;
+    private List<Job> myJobList;
     private int UserId;
     private String UserPassWord;
     private String UserName;
@@ -26,7 +31,9 @@ public class User {
         UserName = "";
         sex = Sex.man;
         Name = "";
+        phone="";
     }
+
     public void setUserId(int userId) {
         UserId = userId;
     }
@@ -88,4 +95,12 @@ public class User {
     }
     public void setPhone(String phone){this.phone = phone;}
     public String getPhone(){return phone;}
+    public void setJobList(List<Job> jobList){this.jobList = jobList;}
+    public List<Job> getJobList(){return jobList;}
+    public void setMyJobList(List<Job> jobList){this.myJobList = jobList;}
+    public List<Job> getMyJobList(){return myJobList;}
+
+    public List<MsgL> getMsgLList(){return msgLList;}
+    public void setMsgLList(List<MsgL> msgLList){this.msgLList = msgLList;}
+
 }

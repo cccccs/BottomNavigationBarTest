@@ -290,7 +290,7 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
         choiceList.add(item4);
         Choice item5 = new Choice();
         item5.setChoice("意见反馈");
-        item5.setImageId(R.drawable.ic_near_me_black_24dp);
+        item5.setImageId(R.drawable.ic_edit_black_24dp);
         choiceList.add(item5);
         return choiceList;
     }
@@ -311,7 +311,7 @@ public class FoursTabFragment extends BaseMainFragment implements LoginFragment.
         choiceList.add(item5);
         Choice item6 = new Choice();
         item6.setChoice("意见反馈");
-        item6.setImageId(R.drawable.ic_near_me_black_24dp);
+        item6.setImageId(R.drawable.ic_edit_black_24dp);
         choiceList.add(item6);
         return choiceList;
     }

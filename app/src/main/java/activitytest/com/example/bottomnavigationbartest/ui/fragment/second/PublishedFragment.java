@@ -182,7 +182,7 @@ public class PublishedFragment extends BaseBackFragment {
     }
 
     public void sendJobInfo() {
-        String url  ="http://119.29.3.128:8080/JobHunter/Employer/publishJob";
+        final String url  ="http://119.29.3.128:8080/JobHunter/Employer/publishJob";
 
 
 
@@ -203,7 +203,7 @@ public class PublishedFragment extends BaseBackFragment {
             json.put("startTime",startTime.getText());
             json.put("endTime",endTime.getText());
             json.put("publishTime",format.format(date));
-            Log.d("PublishFragment","DATE"+format.format(date));
+            Log.d("PublishFragment","日期DATE"+format.format(date));
 
         }catch (JSONException e){
             Toast.makeText(_mActivity, e+ "", Toast.LENGTH_SHORT).show();

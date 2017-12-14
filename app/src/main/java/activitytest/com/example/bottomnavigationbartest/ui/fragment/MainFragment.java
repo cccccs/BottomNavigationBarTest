@@ -23,6 +23,7 @@ import activitytest.com.example.bottomnavigationbartest.MyApplication;
 import activitytest.com.example.bottomnavigationbartest.R;
 import activitytest.com.example.bottomnavigationbartest.base.BaseFragment;
 import activitytest.com.example.bottomnavigationbartest.db.Employer;
+import activitytest.com.example.bottomnavigationbartest.db.Job;
 import activitytest.com.example.bottomnavigationbartest.db.User;
 import activitytest.com.example.bottomnavigationbartest.event.LoginCancelEvent;
 import activitytest.com.example.bottomnavigationbartest.event.LoginSuccessEvent;
@@ -89,7 +90,10 @@ public class MainFragment extends BaseFragment {
         final String strAccount = pref.getString("account","");
         final String strPassword = pref.getString("password","");
         final String strUserType = pref.getString("userType","");
+
         Log.d("MainFragment",strAccount+"strAccount");
+        Log.d("MainFragment",strPassword+"strPassWord");
+        Log.d("MainFragment",strUserType+"strUserType");
         if(strAccount.equals("") ) {
 
         }else if(strUserType.equals("business")){
@@ -99,8 +103,9 @@ public class MainFragment extends BaseFragment {
             loginUser.setName(strAccount);
             loginUser.setLogin(true);
             loginUser.setUserPassWord(strPassword);
-//
+
             mApplication.EmpLogin(loginUser);
+            Log.d("工作存储完毕","MAIN"+loginUser.getJobList());
             loginUser = mApplication.getLoginUser();
 
             stuLogin=false;
@@ -116,6 +121,10 @@ public class MainFragment extends BaseFragment {
             stuLogin=true;
         }
         Log.d("MainActivity","loginUser.getlogin()"+loginUser.getlogin());
+        Log.d("工作存储完毕","MAIN"+loginUser.getJobList());
+        if(loginUser.getJobList()!=null){
+            Log.d("工作存储完毕","MAIN"+loginUser.getJobList().isEmpty());
+        }
         if (savedInstanceState == null) {
             stuFragments[FIRST]=mFragments[FIRST] = FirstTabFragment.newInstance();
             empFragments[FIRST]=mFragments[SECOND] = SecondTabFragment.newInstance();
@@ -173,6 +182,7 @@ public class MainFragment extends BaseFragment {
             Toast.makeText(_mActivity, e+ "", Toast.LENGTH_SHORT).show();
         }
 
+        Log.d("工作请求","MAIN");
 
         RequestBody requestBody = RequestBody.create(JSON,json.toString());
 
@@ -184,15 +194,14 @@ public class MainFragment extends BaseFragment {
                     @Override
                     public void run() {
                         Toast.makeText(_mActivity,"登录失败", Toast.LENGTH_SHORT).show();
-
-
                     }
                 });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(!Utility.handleStatusResponse(response.body().string())){
+                String responseText = response.body().string();
+                if(!Utility.handleStatusResponse(responseText)){
                     _mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -201,14 +210,28 @@ public class MainFragment extends BaseFragment {
                         }
                     });
                 }else{
+
                     _mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(_mActivity, "刷新成功！", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(_mActivity,"登录成功！", Toast.LENGTH_SHORT).show();
                         }
                     });
 
                 }
+
+                Log.d("工作完成","Main"+responseText);
+                final List<Job> jobList = Utility.handlejobResponse(responseText);
+
+                Log.d("工作完成","MAIN"+jobList);
+                if(jobList!=null) {
+
+                    loginUser.setJobList(jobList);
+
+                }
+                Log.d("工作完成","MAIN"+loginUser.getJobList());
+
+
 
                 //获取session的操作，session放在cookie头，且取出后含有“；”，取出后为下面的 s （也就是jsesseionid）
                 Headers headers = response.headers();
@@ -221,13 +244,24 @@ public class MainFragment extends BaseFragment {
                 Log.i("info_s", "session is  :" + sessionStr);
 
                 int userId;
-                try {
-                    JSONObject object = new JSONObject(response.body().toString());
-                     userId = object.getInt("userId");
-                    loginUser.setUserId(userId);
-                }catch (Exception e){
-                    e.printStackTrace();
+                String phoneNum;
+                int genderId;
+
+                userId = Utility.handleIntResponse(responseText,"userId") ;
+                phoneNum = Utility.handleStringResponse(responseText,"phoneNumber");
+                genderId = Utility.handleIntResponse(responseText,"gender") ;
+
+                if(genderId!=0) {
+                    loginUser.setSex(User.Sex.man);
+                }else{
+                    loginUser.setSex(User.Sex.woman);
                 }
+                Log.i("info_logUser", "phoneNum" + phoneNum);
+                loginUser.setPhone(phoneNum);
+                loginUser.setUserId(userId);
+
+                    loginUser.setUserName(strAccount);
+                    loginUser.setUserPassWord(strPassword);
                     loginUser.setSession(sessionStr);
                 Log.i("info_s", "loginUser.setStringStr" + sessionStr);
 

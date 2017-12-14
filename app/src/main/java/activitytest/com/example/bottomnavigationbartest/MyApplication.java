@@ -26,6 +26,10 @@ public class MyApplication extends Application {
         loginUser.setSession(stu.getSession());
         loginUser.setLogin(true);
         loginUser.setUserId(stu.getUserId());
+        loginUser.setUserName(stu.getUserName());
+        loginUser.setPhone(stu.getPhone());
+        loginUser.setSex(stu.getSex());
+        loginUser.setJobList(stu.getJobList());
     }
     public void EmpLogin(User employer){
         loginUser = new Employer();
@@ -34,6 +38,10 @@ public class MyApplication extends Application {
         loginUser.setSession(employer.getSession());
         loginUser.setLogin(true);
         loginUser.setUserId(employer.getUserId());
+        loginUser.setUserName(employer.getUserName());
+        loginUser.setPhone(employer.getPhone());
+        loginUser.setSex(employer.getSex());
+        loginUser.setJobList(employer.getJobList());
     }
 
 

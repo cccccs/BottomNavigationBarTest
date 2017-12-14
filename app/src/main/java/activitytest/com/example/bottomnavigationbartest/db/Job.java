@@ -3,8 +3,6 @@ package activitytest.com.example.bottomnavigationbartest.db;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import static activitytest.com.example.bottomnavigationbartest.db.Job.JobState.doing;
-
 /**
  * Created by pc on 2017/2/15.
  */
@@ -21,7 +19,7 @@ public class Job implements Parcelable {
     private String workTime;
     private String workContent;
     private String havePeopleNum;
-    private JobState jobState;
+    private int status;
     private String startTime;
     private String endTime;
     private String phoneNum;
@@ -56,7 +54,7 @@ public class Job implements Parcelable {
         havePeopleNum = in.readString();
         imageId = in.readInt();
         jobId = in.readInt();
-        jobState = doing;
+        status = in.readInt();
 
     }
     public void setStartTime(String startTime){this.startTime =startTime;}
@@ -137,12 +135,12 @@ public class Job implements Parcelable {
         return jobId;
     }
 
-    public void setJobState(JobState jobState){
-        this.jobState =jobState;
+    public void setStatus(int status){
+        this.status =status;
     }
 
-    public JobState getJobState(){
-        return jobState;
+    public int getStatus(){
+        return status;
     }
 
     @Override
@@ -165,6 +163,7 @@ public class Job implements Parcelable {
         dest.writeString(phoneNum);
         dest.writeInt(workHour);
         dest.writeInt(employerId);
+        dest.writeInt(status);
     }
 
     @Override

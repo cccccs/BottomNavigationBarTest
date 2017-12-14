@@ -84,8 +84,14 @@ public class InformAdapter extends RecyclerView.Adapter<InformAdapter.ViewHolder
     }
 
     @Override
-    public int getItemCount(){
-        return items.size();
+    public int getItemCount() {
+        try{
+            return items.size();
+
+        }catch (Exception e){
+            return 0;
+        }
+
     }
 
 
